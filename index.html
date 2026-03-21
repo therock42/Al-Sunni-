@@ -1,62 +1,252 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>منصة عائلة أبو حليمة الرقمية</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #1e293b;
+            --accent: #2563eb;
+            --link-color: #059669;
+            --bg: #f1f5f9;
+            --card-bg: #ffffff;
+        }
+
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background-color: var(--bg);
+            margin: 0; padding: 20px;
+            display: flex; flex-direction: column; align-items: center;
+            color: var(--primary);
+        }
+
+        .header-box {
+            text-align: center; background: white; padding: 25px;
+            border-radius: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            width: 100%; max-width: 900px; margin-bottom: 30px;
+        }
+
+        .main-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px; width: 100%; max-width: 1000px;
+        }
+
+        .branch-card {
+            background: var(--card-bg); padding: 25px; border-radius: 18px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.02); cursor: pointer;
+            text-align: center; border: 1px solid #e2e8f0; transition: 0.3s ease;
+        }
+
+        .branch-card:hover { border-color: var(--accent); transform: translateY(-5px); box-shadow: 0 12px 20px rgba(0,0,0,0.08); }
+
+        /* Modal Styles */
+        .modal {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(10px);
+            display: none; justify-content: center; align-items: center; z-index: 2000;
+        }
+
+        .modal-content {
+            background: white; padding: 35px; border-radius: 25px;
+            width: 90%; max-width: 650px; max-height: 85vh; overflow-y: auto;
+            position: relative; animation: slideUp 0.4s ease;
+        }
+
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        .close-btn { position: absolute; top: 20px; left: 20px; border: none; background: #f1f5f9; border-radius: 50%; width: 35px; height: 35px; cursor: pointer; font-weight: bold; }
+
+        .partner-box {
+            background: #eff6ff; padding: 18px; border-radius: 15px;
+            margin: 20px 0; border-right: 5px solid var(--accent);
+        }
+
+        .relation-tag {
+            background: #f0fdf4; color: #166534; padding: 6px 14px;
+            border-radius: 8px; font-size: 0.85rem; border: 1px dashed #166534;
+            display: inline-block; margin-top: 8px;
+        }
+
+        .child-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; margin-top: 15px; }
+
+        .child-item {
+            background: #f8fafc; padding: 14px; border-radius: 12px;
+            border: 1px solid #e2e8f0; display: flex; justify-content: space-between;
+            align-items: center; cursor: pointer; transition: 0.2s;
+        }
+
+        .child-item:hover { background: #f0f7ff; border-color: var(--accent); }
+        .child-item.has-link { border-color: var(--link-color); background: #f0fdf4; }
+
+        .btn-jump {
+            background: var(--accent); color: white; border: none;
+            padding: 8px 16px; border-radius: 8px; cursor: pointer;
+            margin-top: 10px; font-family: 'Tajawal';
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header-box">
+        <h2 style="margin:0; color:var(--accent)">شجرة عائلة السني التفاعلية</h2>
+        <p style="color:#64748b">توثيق الأنساب وعلاقات المصاهرة - أحمد (السني) محمد بشير</p>
+    </div>
+
+    <div class="main-grid">
+        <div class="branch-card" onclick="openModal('soliman')"><h3>فرع سليمان (الجاك)</h3></div>
+        <div class="branch-card" onclick="openModal('othman')"><h3>فرع عثمان (حنان)</h3></div>
+        <div class="branch-card" onclick="openModal('mohammed_s')"><h3>فرع محمد (السني)</h3></div>
+        <div class="branch-card" onclick="openModal('bat_almona')"><h3>فرع بت المنى</h3></div>
+    </div>
+
+    <div class="modal" id="familyModal" onclick="closeModal()">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <button class="close-btn" onclick="closeModal()">✕</button>
+            <div id="modalBody"></div>
+        </div>
+    </div>
+
+    <script>
         const familyData = {
-            // ... الفروع السابقة تبقى كما هي ...
-
-            // تحديث فرع عمر سليمان ليشمل رابط لسفيان
-            'omar_s': {
-                name: 'عمر سليمان (الجاك)',
-                partner: 'زينب عثمان (حنان)',
-                children: [
-                    { name: 'سيف الدين', id: null }, { name: 'شمس الدين', id: null },
-                    { name: 'سفيان', id: 'sufian_o' }, // رابط لفرع سفيان
-                    { name: 'حيدر', id: null }, { name: 'نادية', id: null }, 
-                    { name: 'إشراقة', id: 'ishraga_o' }, { name: 'رفيدة', id: null }, 
-                    { name: 'اعتدال', id: 'etidal_o' }, { name: 'رقية', id: null }, { name: 'أمل', id: null }
-                ]
-            },
-
-            // تفاصيل سفيان عمر سليمان
-            'sufian_o': {
-                name: 'سفيان عمر سليمان (الجاك)',
-                partner: 'إقبال عبدالله محمد',
-                partnerId: 'eqbal_a', // رابط لفرع النعمة
-                kinship: 'ابنة عمته (النعمة سليمان هي أخت عمر سليمان)',
-                children: [
-                    { name: 'أمل', id: null },
-                    { name: 'آية', id: null },
-                    { name: 'نون', id: null },
-                    { name: 'تسابيح', id: null }
-                ]
-            },
-
-            // تحديث فرع النعمة سليمان ليشمل إقبال
-            'elneama_s': {
-                name: 'النعمة سليمان (الجاك)',
-                partner: 'عبدالله محمد',
-                children: [
-                    { name: 'إقبال', id: 'eqbal_a' }
-                ]
-            },
-
-            // تفاصيل إقبال عبدالله (الزوجة)
-            'eqbal_a': {
-                name: 'إقبال عبدالله محمد',
-                partner: 'سفيان عمر سليمان',
-                partnerId: 'sufian_o',
-                kinship: 'ابن خالها (عمر سليمان هو أخو النعمة سليمان)',
-                isLinkOnly: true, // الأبناء يعرضون في صفحة سفيان
-                children: []
-            },
-
-            // تحديث فرع سليمان الرئيسي لربط النعمة
+            // الجيل الثاني - الأفرع الرئيسية
             'soliman': {
-                name: 'سليمان (الجاك)',
+                name: 'سليمان (الجاك)', partner: 'غير مسجل',
                 children: [
                     { name: 'فاطمة', id: 'fatima_s' }, { name: 'عمر', id: 'omar_s' },
                     { name: 'نفيسة', id: 'nefisa_s' }, { name: 'أم الحسين', id: null },
-                    { name: 'الروضة عبد الغني', id: null }, 
-                    { name: 'النعمة', id: 'elneama_s' }, // تفعيل رابط النعمة
-                    { name: 'مدينة', id: null }, { name: 'عبد القيوم', id: null },
-                    { name: 'عبد العظيم', id: null }
+                    { name: 'الروضة عبد الغني', id: null }, { name: 'النعمة', id: 'elneama_s' },
+                    { name: 'مدينة', id: null }, { name: 'عبد القيوم', id: null }, { name: 'عبد العظيم', id: null }
+                ]
+            },
+            'othman': {
+                name: 'عثمان (حنان)', partner: 'غير مسجل',
+                children: [
+                    { name: 'زينب', id: 'zeinab_o' }, { name: 'محمد', id: null },
+                    { name: 'فاطمة', id: null }, { name: 'عبد الله', id: null },
+                    { name: 'حسن', id: null }, { name: 'جعفر', id: null }, { name: 'هلالة', id: null }
+                ]
+            },
+
+            // الجيل الثالث - فرع سليمان
+            'fatima_s': {
+                name: 'فاطمة سليمان (الجاك)', partner: 'محمد علي فضيل',
+                children: [
+                    { name: 'عبد الرحمن', id: null }, { name: 'عبد الملك', id: 'abdelmalek_f' },
+                    { name: 'عبد الله', id: null }, { name: 'عبد العزيز', id: null },
+                    { name: 'عبد العظيم', id: null }, { name: 'عشة', id: null }, { name: 'بتول', id: null }
+                ]
+            },
+            'omar_s': {
+                name: 'عمر سليمان (الجاك)', partner: 'زينب عثمان (حنان)', partnerId: 'zeinab_o',
+                kinship: 'ابنة عمه (عثمان أخو سليمان)',
+                children: [
+                    { name: 'سيف الدين', id: null }, { name: 'شمس الدين', id: null },
+                    { name: 'سفيان', id: 'sufian_o' }, { name: 'حيدر', id: null },
+                    { name: 'نادية', id: null }, { name: 'إشراقة', id: 'ishraga_o' },
+                    { name: 'رفيدة', id: null }, { name: 'اعتدال', id: 'etidal_o' },
+                    { name: 'رقية', id: null }, { name: 'أمل', id: null }
+                ]
+            },
+            'nefisa_s': {
+                name: 'نفيسة سليمان (الجاك)', partner: 'صالح علي أبوالحسن',
+                children: [
+                    { name: 'عبد الفتاح', id: null }, { name: 'معتصم', id: null },
+                    { name: 'هاشم', id: 'hashem_s' }, { name: 'عبد الحفيظ', id: null },
+                    { name: 'حسن', id: null }, { name: 'سيد أحمد', id: null },
+                    { name: 'كمال', id: null }, { name: 'بخيتة', id: null },
+                    { name: 'أميرة', id: null }, { name: 'منيرة', id: null }
+                ]
+            },
+            'elneama_s': {
+                name: 'النعمة سليمان (الجاك)', partner: 'عبدالله محمد',
+                children: [{ name: 'إقبال', id: 'eqbal_a' }]
+            },
+
+            // الجيل الرابع - روابط الأقارب والمصاهرات
+            'etidal_o': {
+                name: 'اعتدال عمر سليمان', partner: 'عبد الملك محمد علي فضيل', partnerId: 'abdelmalek_f',
+                kinship: 'ابن عمتها (فاطمة سليمان هي أخت عمر سليمان)',
+                children: [{ name: 'محمد', id: null }, { name: 'مصطفى', id: null }]
+            },
+            'abdelmalek_f': {
+                name: 'عبد الملك محمد علي فضيل', partner: 'اعتدال عمر سليمان', partnerId: 'etidal_o',
+                kinship: 'ابنة خاله (عمر سليمان هو أخو فاطمة سليمان)', isLinkOnly: true
+            },
+            'ishraga_o': {
+                name: 'إشراقة عمر سليمان', partner: 'هاشم صالح علي', partnerId: 'hashem_s',
+                kinship: 'ابن عمتها (نفيسة سليمان هي أخت عمر سليمان)',
+                children: [{ name: 'نادر' }, { name: 'ريم' }, { name: 'رؤى' }, { name: 'رزان' }]
+            },
+            'hashem_s': {
+                name: 'هاشم صالح علي', partner: 'إشراقة عمر سليمان', partnerId: 'ishraga_o',
+                kinship: 'ابنة خاله (عمر سليمان هو أخو نفيسة سليمان)', isLinkOnly: true
+            },
+            'sufian_o': {
+                name: 'سفيان عمر سليمان', partner: 'إقبال عبدالله محمد', partnerId: 'eqbal_a',
+                kinship: 'ابنة عمته (النعمة سليمان هي أخت عمر سليمان)',
+                children: [{ name: 'أمل' }, { name: 'آية' }, { name: 'نون' }, { name: 'تسابيح' }]
+            },
+            'eqbal_a': {
+                name: 'إقبال عبدالله محمد', partner: 'سفيان عمر سليمان', partnerId: 'sufian_o',
+                kinship: 'ابن خالها (عمر سليمان هو أخو النعمة سليمان)', isLinkOnly: true
+            },
+            'zeinab_o': {
+                name: 'زينب عثمان (حنان)', partner: 'عمر سليمان (الجاك)', partnerId: 'omar_s',
+                kinship: 'ابن عمها (سليمان أخو عثمان)', isLinkOnly: true
+            },
+
+            // بقية الأفرع الرئيسية
+            'mohammed_s': {
+                name: 'محمد (السني)', partner: 'غير مسجل',
+                children: [
+                    { name: 'بخيت' }, { name: 'عوض الله' }, { name: 'عباس' }, { name: 'عبد الرحمن' },
+                    { name: 'بلالة' }, { name: 'مسرة' }, { name: 'عبد الواحد' }, { name: 'عبد الرحيم' }
+                ]
+            },
+            'bat_almona': {
+                name: 'بت المنى', partner: 'غير مسجل',
+                children: [
+                    { name: 'العوض' }, { name: 'على' }, { name: 'نفيسة' }, { name: 'مسرة' },
+                    { name: 'بتول' }, { name: 'ستنا' }, { name: 'آمنة' }
                 ]
             }
         };
+
+        function openModal(id) {
+            const person = familyData[id];
+            if (!person) return;
+
+            let html = `<h2 style="color:var(--accent); margin-top:0;">${person.name}</h2>`;
+            
+            // صندوق الشريك
+            html += `<div class="partner-box">
+                <div><strong>الزوج / الزوجة:</strong> ${person.partner}</div>`;
+            if (person.kinship) html += `<div class="relation-tag">صلة القرابة: ${person.kinship}</div>`;
+            if (person.partnerId) html += `<div><button class="btn-jump" onclick="openModal('${person.partnerId}')">انتقل لفرع الشريك 🔗</button></div>`;
+            html += `</div>`;
+
+            // عرض الأبناء أو التحويل
+            if (person.isLinkOnly) {
+                html += `<p style="background:#fff7ed; color:#9a3412; padding:15px; border-radius:10px; border:1px solid #fed7aa;">ℹ️ الأبناء موثقون في فرع الشريك الآخر لمنع التكرار.</p>`;
+                html += `<button class="btn-jump" style="width:100%; padding:12px" onclick="openModal('${person.partnerId}')">عرض أسرة ${person.partner} 📁</button>`;
+            } else {
+                html += `<h3>الأبناء:</h3><div class="child-list">`;
+                person.children.forEach(child => {
+                    html += `<div class="child-item ${child.id ? 'has-link' : ''}" onclick="${child.id ? `openModal('${child.id}')` : ''}">
+                        <span>${child.name}</span>
+                        ${child.id ? '<span style="color:var(--accent)">تفرع ←</span>' : ''}
+                    </div>`;
+                });
+                html += `</div>`;
+            }
+
+            document.getElementById('modalBody').innerHTML = html;
+            document.getElementById('familyModal').style.display = 'flex';
+        }
+
+        function closeModal() { document.getElementById('familyModal').style.display = 'none'; }
+    </script>
+</body>
+</html>
