@@ -13,50 +13,40 @@
         .header { text-align: center; width: 100%; margin-bottom: 20px; }
         .header h2 { color: var(--accent); font-size: 1.6rem; margin-bottom: 5px; }
         
-        /* تحسين محرك البحث */
         .search-container { width: 100%; max-width: 450px; position: relative; margin-bottom: 25px; }
         #familySearch { width: 100%; padding: 14px 25px; border-radius: 30px; border: 2px solid #e2e8f0; font-size: 16px; outline: none; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
-        #familySearch:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1); }
         
         .search-results { position: absolute; top: 110%; left: 0; right: 0; background: white; border-radius: 15px; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); z-index: 2000; max-height: 300px; overflow-y: auto; display: none; border: 1px solid #eee; }
         .search-item { padding: 12px 20px; border-bottom: 1px solid #f1f5f9; cursor: pointer; display: flex; justify-content: space-between; }
-        .search-item:hover { background: #f8fafc; color: var(--accent); }
 
         .main-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; width: 100%; max-width: 500px; }
-        
-        /* التأثير البصري عند الضغط */
         .branch-card { background: var(--card); padding: 25px 10px; border-radius: 18px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); text-align: center; border: 1px solid #e2e8f0; font-weight: bold; cursor: pointer; }
         .branch-card:active { transform: scale(0.95); background: #f1f5f9; }
-        .branch-card:hover { border-color: var(--accent); color: var(--accent); }
 
-        /* نافذة المعلومات */
         .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.7); display: none; justify-content: center; align-items: flex-end; z-index: 1000; backdrop-filter: blur(4px); }
-        .modal-content { background: white; width: 100%; max-height: 85vh; border-radius: 30px 30px 0 0; padding: 30px 20px; overflow-y: auto; position: relative; animation: slideUp 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .modal-content { background: white; width: 100%; max-height: 85vh; border-radius: 30px 30px 0 0; padding: 30px 20px; overflow-y: auto; position: relative; animation: slideUp 0.3s ease-out; }
         @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
         
-        .modal-nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; position: sticky; top: 0; background: white; padding-bottom: 10px; z-index: 10; }
-        .back-btn { background: #f1f5f9; border: none; padding: 10px 18px; border-radius: 12px; font-family: inherit; font-weight: bold; cursor: pointer; color: var(--primary); }
-        .close-btn { background: #fee2e2; color: #dc2626; border: none; border-radius: 50%; width: 40px; height: 40px; cursor: pointer; font-size: 1.2rem; }
+        .modal-nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; position: sticky; top: 0; background: white; padding-bottom: 10px; z-index: 10; }
+        .back-btn { background: #f1f5f9; border: none; padding: 10px 18px; border-radius: 12px; font-weight: bold; cursor: pointer; }
+        .close-btn { background: #fee2e2; color: #dc2626; border: none; border-radius: 50%; width: 40px; height: 40px; cursor: pointer; }
 
-        .partner-box { background: #f0f7ff; padding: 20px; border-radius: 15px; margin-bottom: 20px; border-right: 5px solid var(--accent); }
-        .relation-tag { background: #ecfdf5; color: #065f46; padding: 5px 12px; border-radius: 8px; font-size: 0.85rem; border: 1px solid #a7f3d0; display: inline-block; margin-top: 10px; }
+        .partner-box { background: #f0f7ff; padding: 18px; border-radius: 15px; margin-bottom: 15px; border-right: 5px solid var(--accent); }
+        .relation-tag { background: #ecfdf5; color: #065f46; padding: 4px 10px; border-radius: 8px; font-size: 0.8rem; border: 1px solid #a7f3d0; margin-top: 8px; display: inline-block; }
 
-        .child-list { display: grid; grid-template-columns: 1fr; gap: 12px; }
-        .child-item { background: #ffffff; padding: 16px; border-radius: 12px; border: 1px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
+        .child-list { display: grid; grid-template-columns: 1fr; gap: 10px; }
+        .child-item { background: #ffffff; padding: 15px; border-radius: 12px; border: 1px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
         .child-item:active { background: #f8fafc; transform: translateX(-5px); }
-        .has-link { border-right: 4px solid var(--link); background: #fafffb; }
-        .has-link span:first-child { color: var(--link); font-weight: bold; }
+        .has-link { border-right: 4px solid var(--link); background: #fafffb; color: var(--link); font-weight: bold; }
 
-        .btn-jump { background: var(--accent); color: white; border: none; width: 100%; padding: 14px; border-radius: 12px; margin-top: 15px; font-family: inherit; font-weight: bold; cursor: pointer; box-shadow: 0 4px 6px rgba(37, 99, 235, 0.2); }
-        
-        .empty-msg { text-align: center; color: var(--text-muted); padding: 20px; font-style: italic; }
+        .btn-jump { background: var(--accent); color: white; border: none; width: 100%; padding: 12px; border-radius: 10px; margin-top: 10px; font-weight: bold; cursor: pointer; }
     </style>
 </head>
 <body>
 
     <div class="header">
         <h2>شجرة عائلة السني التفاعلية</h2>
-        <p style="color: var(--text-muted);">نظام توثيق الأجيال الذكي</p>
+        <p style="color: var(--text-muted);">توثيق الأبناء تحت الآباء مع روابط المصاهرة</p>
     </div>
 
     <div class="search-container">
@@ -83,144 +73,82 @@
 
     <script>
         let navHistory = [];
-        
         const familyData = {
             // فرع سليمان الجاك
             'soliman': { name: 'سليمان (الجاك)', children: [{ name: 'فاطمة', id: 'fatima_s' }, { name: 'عمر', id: 'omar_s' }, { name: 'نفيسة', id: 'nefisa_s' }, { name: 'النعمة', id: 'neama_s' }, { name: 'مدينة', id: 'madina_s' }, { name: 'أم الحسين' }, { name: 'الروضة' }, { name: 'عبد القيوم' }, { name: 'عبد العظيم' }] },
             
-            // أبناء عمر سليمان
+            // أبناء عمر سليمان (الأب)
             'omar_s': { name: 'عمر سليمان (الجاك)', partner: 'زينب عثمان (حنان)', partnerId: 'zeinab_o', children: [{ name: 'سيف الدين', id: 'seif_o' }, { name: 'شمس الدين', id: 'shams_o' }, { name: 'سفيان', id: 'sufian_o' }, { name: 'حيدر', id: 'haidar_o' }, { name: 'نادية', id: 'nadia_o' }, { name: 'إشراقة', id: 'ishraga_o' }, { name: 'رفيدة', id: 'rufaida_o' }, { name: 'اعتدال', id: 'etidal_o' }, { name: 'هويدا', id: 'hweida_o' }, { name: 'رقية', id: 'ruqia_o' }, { name: 'أمل', id: 'amal_o' }] },
             
-            'seif_o': { name: 'سيف الدين عمر سليمان', partner: 'أميرة التهامي', children: [{ name: 'ألاء' }, { name: 'إسراء' }, { name: 'محمد' }, { name: 'أحمد' }, { name: 'تنزيل' }] },
-            'shams_o': { name: 'شمس الدين عمر سليمان', partner: 'نهلة محمد عثمان', partnerId: 'nahla_m', kinship: 'ابنة عمه (والدها محمد عثمان هو أخو زينب والدة شمس)', children: [{ name: 'سحر' }, { name: 'محمد' }] },
-            'haidar_o': { name: 'حيدر عمر سليمان', partner: 'نجلاء محمد عثمان', partnerId: 'najla_m', kinship: 'ابنة عمه (والدها محمد عثمان هو أخو زينب والدة حيدر)', children: [{ name: 'سجود' }, { name: 'توسل' }, { name: 'محمد' }, { name: 'أحمد' }, { name: 'منة الله' }, { name: 'عمر' }] },
-            'rufaida_o': { name: 'رفيدة عمر سليمان', partner: 'سليمان خضر', children: [{ name: 'شهد' }, { name: 'صفاء' }, { name: 'التاج' }, { name: 'مدثر' }, { name: 'سيف الدين' }, { name: 'وعد' }] },
-            'ruqia_o': { name: 'رقية عمر سليمان', partner: 'محمد عبدالله احمد صالح', partnerId: 'mohammed_a', kinship: 'ابن عمتها (النعمة سليمان)', children: [{ name: 'امتثال' }, { name: 'عبير' }, { name: 'إيمان' }, { name: 'محمد' }] },
-            'nadia_o': { name: 'نادية عمر سليمان', partner: 'إبراهيم الصافي', children: [] },
-            'amal_o': { name: 'أمل عمر سليمان', partner: 'يوسف التهامي', children: [{ name: 'حفية' }, { name: 'مآب' }] },
-            'hweida_o': { name: 'هويدا عمر سليمان', partner: 'محمد خير عبدالرحمن', children: [{ name: 'عامر' }, { name: 'أحمد' }, { name: 'أواب' }, { name: 'أنس' }, { name: 'زينب' }, { name: 'مصطفى' }] },
-            'sufian_o': { name: 'سفيان عمر سليمان', partner: 'إقبال عبدالله محمد', partnerId: 'eqbal_a', kinship: 'ابنة عمته (النعمة سليمان)', children: [{ name: 'أمل' }, { name: 'آية' }, { name: 'نون' }, { name: 'تسابيح' }] },
-            'etidal_o': { name: 'اعتدال عمر سليمان', partner: 'عبد الملك محمد علي فضيل', partnerId: 'abdelmalek_f', kinship: 'ابن عمتها (فاطمة سليمان)', children: [{ name: 'محمد' }, { name: 'مصطفى' }] },
-            'ishraga_o': { name: 'إشراقة عمر سليمان', partner: 'هاشم صالح علي', partnerId: 'hashem_s', kinship: 'ابن عمتها (نفيسة سليمان)', children: [{ name: 'نادر' }, { name: 'ريم' }, { name: 'رؤى' }, { name: 'رزان' }] },
+            // فرع نفيسة سليمان (الربط بصالح علي)
+            'nefisa_s': { name: 'نفيسة سليمان (الجاك)', partner: 'صالح علي أبو الحسن', partnerId: 'saleh_ali', isLinkOnly: true },
+            'saleh_ali': { name: 'صالح علي أبو الحسن', partner: 'نفيسة سليمان (الجاك)', children: [{ name: 'فتاح' }, { name: 'التجاني' }, { name: 'هاشم', id: 'hashem_s' }, { name: 'معتصم' }, { name: 'عبدالحفيظ' }, { name: 'سيدأحمد' }, { name: 'حسن' }, { name: 'كمال' }, { name: 'بخيتة' }, { name: 'أميرة' }, { name: 'منيرة' }] },
 
-            // فرع النعمة سليمان
-            'neama_s': { name: 'النعمة سليمان (الجاك)', partner: 'عبدالله احمد صالح', children: [{ name: 'محمد', id: 'mohammed_a' }, { name: 'محي الدين', id: 'mohi_a' }, { name: 'أبوالقاسم', id: 'abulgasim_a' }, { name: 'فائزة', id: 'faiza_a' }, { name: 'إقبال', id: 'eqbal_a' }, { name: 'سعاد', id: 'suad_a' }] },
-            'mohammed_a': { name: 'محمد عبدالله احمد صالح', partner: 'رقية عمر سليمان', partnerId: 'ruqia_o', isLinkOnly: true },
-            'mohi_a': { name: 'محي الدين عبدالله احمد صالح', partner: 'شيماء بخيت', children: [] },
-            'abulgasim_a': { name: 'أبوالقاسم عبدالله احمد صالح', partner: 'رميساء عبدالرحمن', children: [{ name: 'عبدالله' }, { name: 'يمنى' }, { name: 'يسرا' }] },
-            'suad_a': { name: 'سعاد عبدالله احمد صالح', partner: 'هيثم', children: [{ name: 'أنوار' }, { name: 'شروق' }, { name: 'محمد' }] },
-            'faiza_a': { name: 'فائزة عبدالله احمد صالح', partner: 'طارق عبدالله الامين', children: [{ name: 'ولاء' }, { name: 'عادل' }] },
-            'eqbal_a': { name: 'إقبال عبدالله محمد', partner: 'سفيان عمر سليمان', partnerId: 'sufian_o', isLinkOnly: true },
+            // الربط بين هاشم وإشراقة (الأبناء تحت هاشم)
+            'ishraga_o': { name: 'إشراقة عمر سليمان', partner: 'هاشم صالح علي', partnerId: 'hashem_s', isLinkOnly: true },
+            'hashem_s': { name: 'هاشم صالح علي', partner: 'إشراقة عمر سليمان', children: [{ name: 'نادر' }, { name: 'ريم' }, { name: 'رؤى' }, { name: 'رزان' }] },
 
-            // فرع عثمان حنان
-            'othman': { name: 'عثمان (حنان)', children: [{ name: 'محمد', id: 'mohammed_o' }, { name: 'عبدالله', id: 'abdullah_o' }, { name: 'حسن', id: 'hassan_o' }, { name: 'زينب', id: 'zeinab_o' }, { name: 'هلالة', id: 'hilala_o' }, { name: 'فاطمة' }, { name: 'جعفر' }] },
-            'mohammed_o': { name: 'محمد عثمان (حنان)', partner: 'مدينة سليمان (الجاك)', partnerId: 'madina_s', kinship: 'ابنة عمه (سليمان أخو عثمان)', children: [{ name: 'أميمة' }, { name: 'نهلة', id: 'nahla_m' }, { name: 'نجلاء', id: 'najla_m' }, { name: 'ابتهاج' }, { name: 'ميساء' }, { name: 'مجاهد' }] },
-            'madina_s': { name: 'مدينة سليمان (الجاك)', partner: 'محمد عثمان (حنان)', partnerId: 'mohammed_o', isLinkOnly: true },
-            'abdullah_o': { name: 'عبدالله عثمان (حنان)', partner: 'سعاد الصادق', children: [{ name: 'المعز' }, { name: 'مجدي' }, { name: 'محمد' }, { name: 'منذر' }, { name: 'رانيا' }, { name: 'رندا' }, { name: 'ريان' }] },
-            'hassan_o': { name: 'حسن عثمان (حنان)', partner: 'غير مسجل', children: [{ name: 'السر' }, { name: 'كمال' }, { name: 'محمد' }] },
-            'zeinab_o': { name: 'زينب عثمان (حنان)', partner: 'عمر سليمان (الجاك)', partnerId: 'omar_s', isLinkOnly: true },
-            'hilala_o': { name: 'هلالة عثمان (حنان)', partner: 'عباس محمد (السني)', partnerId: 'abbas_s', kinship: 'ابن عمها (محمد السني أخو عثمان)', children: [] },
+            // الربط بين شمس الدين ونهلة (الأبناء تحت شمس الدين)
             'nahla_m': { name: 'نهلة محمد عثمان', partner: 'شمس الدين عمر سليمان', partnerId: 'shams_o', isLinkOnly: true },
-            'najla_m': { name: 'نجلاء محمد عثمان', partner: 'حيدر عمر سليمان', partnerId: 'haidar_o', isLinkOnly: true },
+            'shams_o': { name: 'شمس الدين عمر سليمان', partner: 'نهلة محمد عثمان', children: [{ name: 'سحر' }, { name: 'محمد' }] },
 
-            // الفروع الأخرى
-            'mohammed_s': { name: 'محمد (السني)', children: [{ name: 'عباس', id: 'abbas_s' }, { name: 'بخيت' }, { name: 'عوض الله' }, { name: 'عبد الرحمن' }, { name: 'بلالة' }, { name: 'مسرة' }, { name: 'عبد الواحد' }, { name: 'عبد الرحيم' }] },
-            'abbas_s': { name: 'عباس محمد (السني)', partner: 'هلالة عثمان (حنان)', partnerId: 'hilala_o', children: [] },
-            'bat_almona': { name: 'بت المنى', children: [{ name: 'العوض' }, { name: 'على' }, { name: 'نفيسة' }, { name: 'مسرة' }] }
+            // الربط بين حيدر ونجلاء (الأبناء تحت حيدر)
+            'najla_m': { name: 'نجلاء محمد عثمان', partner: 'حيدر عمر سليمان', partnerId: 'haidar_o', isLinkOnly: true },
+            'haidar_o': { name: 'حيدر عمر سليمان', partner: 'نجلاء محمد عثمان', children: [{ name: 'سجود' }, { name: 'توسل' }, { name: 'محمد' }, { name: 'أحمد' }, { name: 'منة الله' }, { name: 'عمر' }] },
+
+            // بقية الفروع بنفس المنطق
+            'neama_s': { name: 'النعمة سليمان (الجاك)', partner: 'عبدالله احمد صالح', partnerId: 'abdullah_as', isLinkOnly: true },
+            'abdullah_as': { name: 'عبدالله احمد صالح', partner: 'النعمة سليمان (الجاك)', children: [{ name: 'محمد', id: 'mohammed_a' }, { name: 'محي الدين', id: 'mohi_a' }, { name: 'أبوالقاسم', id: 'abulgasim_a' }, { name: 'فائزة', id: 'faiza_a' }, { name: 'إقبال', id: 'eqbal_a' }, { name: 'سعاد', id: 'suad_a' }] },
+
+            'othman': { name: 'عثمان (حنان)', children: [{ name: 'محمد', id: 'mohammed_o' }, { name: 'عبدالله', id: 'abdullah_o' }, { name: 'حسن', id: 'hassan_o' }, { name: 'زينب', id: 'zeinab_o' }, { name: 'هلالة', id: 'hilala_o' }] },
+            'zeinab_o': { name: 'زينب عثمان (حنان)', partner: 'عمر سليمان (الجاك)', partnerId: 'omar_s', isLinkOnly: true },
+            
+            'mohammed_s': { name: 'محمد (السني)', children: [{ name: 'عباس', id: 'abbas_s' }, { name: 'بخيت' }, { name: 'عوض الله' }] },
+            'bat_almona': { name: 'بت المنى', children: [{ name: 'العوض' }, { name: 'على' }] }
         };
 
-        // دالة لفتح النافذة وضمان عدم الانهيار في حال فقدان البيانات
         function openModal(id, save = true) {
             let p = familyData[id]; 
-            
-            // إذا لم تكن البيانات موجودة، أنشئ كائناً مؤقتاً لحين تعبئته لاحقاً
-            if (!p) {
-                p = { name: id.replace(/_/g, ' '), children: [], partner: 'غير مسجل حالياً' };
-            }
-
+            if (!p) p = { name: id.replace(/_/g, ' '), children: [], partner: 'غير مسجل' };
             if (save) navHistory.push(id);
             updateBack();
             
-            let h = `<h3 style="margin-top:0; color:var(--primary); font-size:1.5rem;">${p.name}</h3>`;
+            let h = `<h3 style="color:var(--primary);">${p.name}</h3>`;
             h += `<div class="partner-box"><div><strong>الزوج/ة:</strong> ${p.partner || 'غير مسجل'}</div>`;
-            if (p.kinship) h += `<div class="relation-tag">صلة القرابة: ${p.kinship}</div>`;
-            if (p.partnerId) h += `<button class="btn-jump" onclick="openModal('${p.partnerId}')">انتقل لفرع الشريك 🔗</button>`;
+            if (p.partnerId) h += `<button class="btn-jump" onclick="openModal('${p.partnerId}')">انتقل لصفحة الشريك 🔗</button>`;
             h += `</div>`;
 
             if (p.isLinkOnly) {
-                h += `<p style="background:#fff7ed; padding:15px; border-radius:12px; font-size:0.95rem; border:1px solid #ffedd5;">ℹ️ الأبناء موثقون في فرع الشريك الآخر لسهولة العرض.</p>`;
-                h += `<button class="btn-jump" onclick="openModal('${p.partnerId}')" style="background:var(--link)">عرض أسرة الشريك</button>`;
+                h += `<p style="background:#fff7ed; padding:15px; border-radius:12px; font-size:0.9rem; border:1px solid #ffedd5;">ℹ️ الأبناء موثقون في فرع الأب (الشريك) بناءً على هيكلية الشجرة.</p>`;
+                h += `<button class="btn-jump" onclick="openModal('${p.partnerId}')" style="background:var(--link)">عرض الأبناء في صفحة الأب</button>`;
             } else if (p.children && p.children.length > 0) {
-                h += `<h4 style="margin-bottom:15px; color:var(--text-muted);">الأبناء (${p.children.length}):</h4><div class="child-list">`;
+                h += `<h4>الأبناء:</h4><div class="child-list">`;
                 p.children.forEach(c => {
-                    h += `<div class="child-item ${c.id ? 'has-link' : ''}" onclick="${c.id ? `openModal('${c.id}')` : `alert('سيتم إضافة بيانات ${c.name} قريباً')`}">
-                        <span>${c.name}</span> ${c.id ? '<span>←</span>' : '<span style="color:#ccc; font-size:0.8rem;">قريباً</span>'}
+                    h += `<div class="child-item ${c.id ? 'has-link' : ''}" onclick="${c.id ? `openModal('${c.id}')` : ''}">
+                        <span>${c.name}</span> ${c.id ? '<span>←</span>' : ''}
                     </div>`;
                 });
                 h += `</div>`;
-            } else { 
-                h += `<div class="empty-msg">لا يوجد أبناء مسجلين في هذا الفرع حالياً.</div>`; 
-            }
+            } else { h += `<p style="text-align:center; color:#999; padding:20px;">لا يوجد أبناء مسجلين حالياً.</p>`; }
 
             document.getElementById('modalBody').innerHTML = h;
             document.getElementById('familyModal').style.display = 'flex';
-            document.getElementById('searchResults').style.display = 'none'; // إغلاق نتائج البحث عند الاختيار
+            document.getElementById('searchResults').style.display = 'none';
         }
 
-        // تحسين محرك البحث ليعرض قائمة خيارات
         function searchFamily(query) {
-            const resultsDiv = document.getElementById('searchResults');
-            if (query.trim().length < 2) {
-                resultsDiv.style.display = 'none';
-                return;
-            }
-
-            let matches = [];
-            for (let id in familyData) {
-                if (familyData[id].name.includes(query)) {
-                    matches.push({ id, name: familyData[id].name });
-                }
-            }
-
+            const resDiv = document.getElementById('searchResults');
+            if (query.trim().length < 2) { resDiv.style.display = 'none'; return; }
+            let matches = Object.keys(familyData).filter(id => familyData[id].name.includes(query));
             if (matches.length > 0) {
-                resultsDiv.innerHTML = matches.map(m => `
-                    <div class="search-item" onclick="openModal('${m.id}')">
-                        <span>${m.name}</span>
-                        <small style="color:#999">عرض التفاصيل</small>
-                    </div>
-                `).join('');
-                resultsDiv.style.display = 'block';
-            } else {
-                resultsDiv.innerHTML = `<div class="search-item">لا توجد نتائج مطابقة</div>`;
-                resultsDiv.style.display = 'block';
-            }
+                resDiv.innerHTML = matches.map(id => `<div class="search-item" onclick="openModal('${id}')"><span>${familyData[id].name}</span></div>`).join('');
+                resDiv.style.display = 'block';
+            } else { resDiv.style.display = 'none'; }
         }
 
-        function goBack() {
-            if (navHistory.length > 1) {
-                navHistory.pop();
-                openModal(navHistory[navHistory.length - 1], false);
-            }
-            updateBack();
-        }
-
-        function updateBack() {
-            document.getElementById('backBtn').style.visibility = navHistory.length > 1 ? 'visible' : 'hidden';
-        }
-
-        function closeModal() {
-            document.getElementById('familyModal').style.display = 'none';
-            navHistory = [];
-            updateBack();
-            document.getElementById('familySearch').value = '';
-        }
-
-        // إغلاق قائمة البحث عند الضغط خارجها
-        document.addEventListener('click', (e) => {
-            if (!e.target.closest('.search-container')) {
-                document.getElementById('searchResults').style.display = 'none';
-            }
-        });
+        function goBack() { if (navHistory.length > 1) { navHistory.pop(); openModal(navHistory[navHistory.length-1], false); } updateBack(); }
+        function updateBack() { document.getElementById('backBtn').style.visibility = navHistory.length > 1 ? 'visible' : 'hidden'; }
+        function closeModal() { document.getElementById('familyModal').style.display = 'none'; navHistory = []; updateBack(); }
     </script>
 </body>
 </html>
