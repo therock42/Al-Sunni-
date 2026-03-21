@@ -3,102 +3,144 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>شجرة عائلة السني - الإصدار الذهبي المدقق</title>
+    <title>شجرة عائلة السني - النسخة النهائية المدققة</title>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root { --primary: #1e293b; --accent: #2563eb; --gold: #b45309; --bg: #f8fafc; }
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { font-family: 'Tajawal', sans-serif; background-color: var(--bg); margin: 0; padding: 10px; }
+        body { font-family: 'Tajawal', sans-serif; background-color: var(--bg); margin: 0; padding: 10px; line-height: 1.6; }
         .header { text-align: center; padding: 10px; }
-        .kinship-tool { background: white; border: 2px solid var(--gold); border-radius: 20px; padding: 15px; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        
+        /* إعادة خانة البحث الأساسية */
+        .search-section { background: white; padding: 15px; border-radius: 15px; margin-bottom: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        .search-input { width: 100%; padding: 12px; border: 2px solid #e2e8f0; border-radius: 10px; font-family: 'Tajawal'; font-size: 16px; outline: none; transition: 0.3s; }
+        .search-input:focus { border-color: var(--accent); }
+
+        /* كاشف القرابة */
+        .kinship-tool { background: #fff; border: 2px solid var(--gold); border-radius: 20px; padding: 15px; margin-bottom: 20px; }
+        .tool-title { text-align: center; color: var(--gold); margin-top: 0; font-size: 1.1rem; }
         .input-group { position: relative; margin-bottom: 10px; }
-        input { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 10px; font-family: 'Tajawal'; font-size: 15px; outline: none; }
-        .suggestions { position: absolute; top: 100%; left: 0; right: 0; background: white; border: 1px solid #ddd; border-radius: 0 0 10px 10px; z-index: 3000; max-height: 200px; overflow-y: auto; display: none; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-        .suggestion-item { padding: 12px; border-bottom: 1px solid #eee; cursor: pointer; font-size: 0.9rem; }
-        .suggestion-item:hover { background: #f0f7ff; color: var(--accent); }
-        .btn-check { background: var(--gold); color: white; border: none; padding: 12px; border-radius: 10px; font-weight: bold; width: 100%; cursor: pointer; }
-        #kinshipResult { margin-top: 15px; padding: 15px; border-radius: 12px; background: #fffcf0; border: 1px solid #fde68a; display: none; text-align: center; color: #92400e; font-weight: bold; }
-        .main-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        .branch-card { background: white; padding: 20px 5px; border-radius: 15px; text-align: center; border-bottom: 4px solid var(--accent); font-weight: bold; cursor: pointer; }
+        .tool-input { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; font-family: 'Tajawal'; }
+        .suggestions { position: absolute; top: 100%; left: 0; right: 0; background: white; border: 1px solid #ddd; z-index: 1000; max-height: 150px; overflow-y: auto; display: none; border-radius: 0 0 8px 8px; }
+        .sugg-item { padding: 10px; border-bottom: 1px solid #eee; cursor: pointer; font-size: 0.9rem; }
+        .btn-check { background: var(--gold); color: white; border: none; padding: 10px; border-radius: 8px; width: 100%; cursor: pointer; font-weight: bold; }
+        #kinshipResult { margin-top: 10px; padding: 10px; background: #fffcf0; border-radius: 8px; display: none; text-align: center; font-size: 0.95rem; border: 1px solid #fde68a; }
+
+        .main-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .branch-card { background: white; padding: 25px 10px; border-radius: 15px; text-align: center; border-bottom: 4px solid var(--accent); font-weight: bold; cursor: pointer; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        
+        /* المودال (النافذة المنبثقة) */
         .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); display: none; justify-content: center; align-items: flex-end; z-index: 2000; }
-        .modal-content { background: white; width: 100%; max-height: 85vh; border-radius: 25px 25px 0 0; padding: 25px; overflow-y: auto; position: relative; }
-        .close-btn { background: #fee2e2; color: #dc2626; border: none; border-radius: 50%; width: 35px; height: 35px; cursor: pointer; }
+        .modal-content { background: white; width: 100%; max-height: 85vh; border-radius: 25px 25px 0 0; padding: 20px; overflow-y: auto; position: relative; }
+        .close-btn { background: #fee2e2; color: #dc2626; border: none; border-radius: 50%; width: 35px; height: 35px; float: left; cursor: pointer; font-size: 1.2rem; }
+        .child-link { background: #f8fafc; padding: 15px; border: 1px solid #e2e8f0; border-radius: 10px; margin-bottom: 8px; display: flex; justify-content: space-between; cursor: pointer; }
     </style>
 </head>
 <body>
 
     <div class="header">
         <h2>شجرة عائلة السني التفاعلية</h2>
-        <p style="color: #64748b; font-size: 0.85rem;">نسخة مدققة (تعريب كامل + ذكاء الأقارب)</p>
+        <p style="color: #64748b; font-size: 0.9rem;">اضغط على الاسم للتفاصيل</p>
+    </div>
+
+    <div class="search-section">
+        <input type="text" class="search-input" placeholder="بحث بالاسم (مثلاً: نادر أو أنس)..." oninput="mainSearch(this.value)">
+        <div id="mainSearchRes" class="suggestions" style="position:static; width:100%; margin-top:5px;"></div>
     </div>
 
     <div class="kinship-tool">
-        <h4 style="margin:0 0 12px 0; color:var(--gold); text-align:center;">🔍 كاشف صلة القرابة (خال، عم، ابن خالة)</h4>
+        <h4 class="tool-title">🔍 كاشف صلة القرابة</h4>
         <div class="input-group">
-            <input type="text" id="p1Input" placeholder="اكتب الاسم الأول أو الكامل..." oninput="showSuggest(this, 'sugg1')" autocomplete="off">
-            <div id="sugg1" class="suggestions"></div>
+            <input type="text" id="p1" class="tool-input" placeholder="الشخص الأول..." oninput="showSuggest(this, 's1')" autocomplete="off">
+            <div id="s1" class="suggestions"></div>
         </div>
         <div class="input-group">
-            <input type="text" id="p2Input" placeholder="اكتب اسم القريب..." oninput="showSuggest(this, 'sugg2')" autocomplete="off">
-            <div id="sugg2" class="suggestions"></div>
+            <input type="text" id="p2" class="tool-input" placeholder="الشخص الثاني..." oninput="showSuggest(this, 's2')" autocomplete="off">
+            <div id="s2" class="suggestions"></div>
         </div>
-        <button class="btn-check" onclick="traceKinship()">تحليل العلاقة فوراً</button>
+        <button class="btn-check" onclick="analyzeRelation()">تحليل العلاقة</button>
         <div id="kinshipResult"></div>
     </div>
 
     <div class="main-grid">
-        <div class="branch-card" onclick="openModal('سليمان_الجاك')">سليمان (الجاك)</div>
-        <div class="branch-card" onclick="openModal('عثمان_حنان')">عثمان (حنان)</div>
-        <div class="branch-card" onclick="openModal('محمد_السني')">محمد (السني)</div>
-        <div class="branch-card" onclick="openModal('بت_المنى')">بت المنى</div>
+        <div class="branch-card" onclick="openModal('سليمان الجاك')">سليمان (الجاك)</div>
+        <div class="branch-card" onclick="openModal('عثمان حنان')">عثمان (حنان)</div>
+        <div class="branch-card" onclick="openModal('محمد السني')">محمد (السني)</div>
+        <div class="branch-card" onclick="openModal('بت المنى')">بت المنى</div>
     </div>
 
     <div class="modal" id="familyModal" onclick="closeModal()">
         <div class="modal-content" onclick="event.stopPropagation()">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
-                <h3 id="modalTitle" style="margin:0; color:var(--accent);"></h3>
-                <button onclick="closeModal()" class="close-btn">✕</button>
-            </div>
+            <button onclick="closeModal()" class="close-btn">✕</button>
+            <h3 id="modalTitle" style="color:var(--accent); margin-top:10px;"></h3>
             <div id="modalBody"></div>
         </div>
     </div>
 
     <script>
-        // قاعدة بيانات مدققة بالكامل (أسماء المفاتيح بالعربي لمنع ظهور الإنجليزية)
+        // قاعدة البيانات المعربة بالكامل (لا وجود للإنجليزية هنا)
         const familyData = {
-            'سليمان_الجاك': { name: 'سليمان (الجاك)', children: ['عمر_سليمان', 'نفيسة_سليمان', 'النعمة_سليمان', 'مدينة_سليمان', 'فاطمة_سليمان'] },
-            'عثمان_حنان': { name: 'عثمان (حنان)', children: ['محمد_عثمان', 'زينب_عثمان', 'عبدالله_عثمان', 'حسن_عثمان'] },
-            'محمد_السني': { name: 'محمد (السني)', children: ['عباس_محمد_السني'] },
-            'بت_المنى': { name: 'بت المنى', children: ['العوض_بت_المنى'] },
-
-            'عمر_سليمان': { name: 'عمر سليمان (الجاك)', parent: 'سليمان_الجاك', partner: 'زينب عثمان', partnerId: 'زينب_عثمان', children: ['سيف_الدين_عمر', 'شمس_الدين_عمر', 'حيدر_عمر', 'إشراقة_عمر', 'هويدا_عمر', 'اعتدال_عمر'] },
-            'نفيسة_سليمان': { name: 'نفيسة سليمان (الجاك)', parent: 'سليمان_الجاك', partner: 'صالح علي ابوالحسن', children: ['هاشم_صالح', 'عبدالحفيظ_صالح', 'حسن_صالح'] },
-            
-            'هاشم_صالح': { name: 'هاشم صالح علي ابوالحسن', parent: 'نفيسة_سليمان', partner: 'إشراقة عمر سليمان', partnerId: 'إشراقة_عمر', children: ['نادر_هاشم', 'ريم_هاشم'] },
-            'إشراقة_عمر': { name: 'إشراقة عمر سليمان (الجاك)', parent: 'عمر_سليمان', partnerId: 'هاشم_صالح' },
-            'هويدا_عمر': { name: 'هويدا عمر سليمان (الجاك)', parent: 'عمر_سليمان', partner: 'محمد خير عبدالرحمن', children: ['أنس_محمد_خير'] },
-            
-            'نادر_هاشم': { name: 'نادر هاشم صالح علي ابوالحسن', parent: 'هاشم_صالح' },
-            'أنس_محمد_خير': { name: 'أنس محمد خير عبدالرحمن', parent: 'هويدا_عمر' },
-            'اعتدال_عمر': { name: 'اعتدال عمر سليمان (الجاك)', parent: 'عمر_سليمان', partner: 'عبد الملك محمد علي فضيل', partnerId: 'عبدالملك_فضيل' },
-            'عبدالملك_فضيل': { name: 'عبد الملك محمد علي فضيل', partnerId: 'اعتدال_عمر' },
-
-            'عباس_محمد_السني': { name: 'عباس محمد (السني)', parent: 'محمد_السني', children: ['محمد_عباس', 'حسين_عباس', 'السني_عباس', 'فيصل_عباس', 'أمل_عباس'] },
-            'محمد_عثمان': { name: 'محمد عثمان (حنان)', parent: 'عثمان_حنان', partner: 'مدينة سليمان', children: ['نهلة_محمد_عثمان', 'نجلاء_محمد_عثمان'] },
-            'مدينة_سليمان': { name: 'مدينة سليمان (الجاك)', parent: 'سليمان_الجاك', partnerId: 'محمد_عثمان' },
-            'زينب_عثمان': { name: 'زينب عثمان (حنان)', parent: 'عثمان_حنان', partnerId: 'عمر_سليمان' }
+            'سليمان الجاك': { 
+                name: 'سليمان (الجاك)', 
+                children: ['عمر سليمان (الجاك)', 'نفيسة سليمان (الجاك)', 'النعمة سليمان (الجاك)', 'مدينة سليمان (الجاك)', 'فاطمة سليمان (الجاك)', 'عبدالعظيم سليمان (الجاك)', 'عبدالقيوم سليمان (الجاك)', 'أم الحسين سليمان (الجاك)', 'روضة سليمان (الجاك)'] 
+            },
+            'عثمان حنان': { 
+                name: 'عثمان (حنان)', 
+                children: ['محمد عثمان (حنان)', 'زينب عثمان (حنان)', 'عبدالله عثمان (حنان)', 'حسن عثمان (حنان)', 'هلالة عثمان (حنان)'] 
+            },
+            'عمر سليمان (الجاك)': { 
+                name: 'عمر سليمان (الجاك)', 
+                parent: 'سليمان الجاك',
+                partner: 'زينب عثمان (حنان)', 
+                children: ['سيف الدين عمر سليمان', 'شمس الدين عمر سليمان', 'حيدر عمر سليمان', 'إشراقة عمر سليمان', 'هويدا عمر سليمان', 'اعتدال عمر سليمان', 'رفيدة عمر سليمان', 'أنس عمر سليمان'] 
+            },
+            'نفيسة سليمان (الجاك)': {
+                name: 'نفيسة سليمان (الجاك)',
+                parent: 'سليمان الجاك',
+                partner: 'صالح علي ابوالحسن',
+                children: ['هاشم صالح علي ابوالحسن', 'عبدالحفيظ صالح علي ابوالحسن', 'حسن صالح علي ابوالحسن', 'كمال صالح علي ابوالحسن', 'أميرة صالح علي ابوالحسن']
+            },
+            'هاشم صالح علي ابوالحسن': {
+                name: 'هاشم صالح علي ابوالحسن',
+                parent: 'نفيسة سليمان (الجاك)',
+                partner: 'إشراقة عمر سليمان',
+                children: ['نادر هاشم صالح علي', 'ريم هاشم صالح علي', 'رؤى هاشم صالح علي']
+            },
+            'إشراقة عمر سليمان': { name: 'إشراقة عمر سليمان (الجاك)', parent: 'عمر سليمان (الجاك)', partner: 'هاشم صالح علي' },
+            'اعتدال عمر سليمان': { name: 'اعتدال عمر سليمان (الجاك)', parent: 'عمر سليمان (الجاك)', partner: 'عبد الملك محمد علي فضيل' },
+            'عبد الملك محمد علي فضيل': { name: 'عبد الملك محمد علي فضيل', partner: 'اعتدال عمر سليمان' },
+            'نادر هاشم صالح علي': { name: 'نادر هاشم صالح علي ابوالحسن', parent: 'هاشم صالح علي ابوالحسن' },
+            'هويدا عمر سليمان': { name: 'هويدا عمر سليمان (الجاك)', parent: 'عمر سليمان (الجاك)', partner: 'محمد خير عبدالرحمن', children: ['أنس محمد خير عبدالرحمن'] },
+            'أنس محمد خير عبدالرحمن': { name: 'أنس محمد خير عبدالرحمن', parent: 'هويدا عمر سليمان' },
+            'محمد السني': { name: 'محمد (السني)', children: ['عباس محمد السني'] },
+            'عباس محمد السني': { name: 'عباس محمد (السني)', parent: 'محمد السني', children: ['محمد عباس', 'حسين عباس', 'فيصل عباس'] },
+            'بت المنى': { name: 'بت المنى', children: ['العوض بت المنى'] }
         };
 
-        function normalize(t) { return t ? t.replace(/[أإآا]/g, "ا").replace(/[ةه]/g, "ه").replace(/\s+/g, "") : ""; }
+        function normalize(t) { return t ? t.replace(/[أإآا]/g, "ا").replace(/[ةه]/g, "ه").replace(/\s+/g, " ").trim() : ""; }
+
+        // البحث الرئيسي
+        function mainSearch(val) {
+            const resDiv = document.getElementById('mainSearchRes');
+            const query = normalize(val);
+            if (query.length < 2) { resDiv.style.display = 'none'; return; }
+            let html = "";
+            for (let key in familyData) {
+                if (normalize(familyData[key].name).includes(query)) {
+                    html += `<div class="sugg-item" onclick="openModal('${key}')">${familyData[key].name}</div>`;
+                }
+            }
+            resDiv.innerHTML = html; resDiv.style.display = html ? 'block' : 'none';
+        }
 
         function showSuggest(input, suggId) {
             const div = document.getElementById(suggId);
             const val = normalize(input.value);
             if (val.length < 2) { div.style.display = 'none'; return; }
             let html = "";
-            for (let id in familyData) {
-                if (normalize(familyData[id].name).includes(val)) {
-                    html += `<div class="suggestion-item" onclick="selectSugg('${id}', '${familyData[id].name}', '${input.id}', '${suggId}')">${familyData[id].name}</div>`;
+            for (let key in familyData) {
+                if (normalize(familyData[key].name).includes(val)) {
+                    html += `<div class="sugg-item" onclick="selectSugg('${key}', '${familyData[key].name}', '${input.id}', '${suggId}')">${familyData[key].name}</div>`;
                 }
             }
             div.innerHTML = html; div.style.display = html ? 'block' : 'none';
@@ -106,52 +148,45 @@
 
         function selectSugg(id, name, inputId, suggId) {
             const input = document.getElementById(inputId);
-            input.value = name;
-            input.dataset.selectedId = id;
+            input.value = name; input.dataset.selectedId = id;
             document.getElementById(suggId).style.display = 'none';
         }
 
-        function traceKinship() {
-            const id1 = document.getElementById('p1Input').dataset.selectedId;
-            const id2 = document.getElementById('p2Input').dataset.selectedId;
+        function analyzeRelation() {
+            const id1 = document.getElementById('p1').dataset.selectedId;
+            const id2 = document.getElementById('p2').dataset.selectedId;
             const res = document.getElementById('kinshipResult');
             if (!id1 || !id2) { res.innerHTML = "يرجى اختيار الأسماء من القائمة."; res.style.display = 'block'; return; }
-            
-            const p1 = familyData[id1]; const p2 = familyData[id2];
-            let msg = "توجد صلة قرابة بين الطرفين.";
-
-            if (p1.partnerId === id2 || p2.partnerId === id1) msg = `💍 زوجان`;
-            else if (p1.parent === id2 || p2.parent === id1) msg = `👨‍👩‍👧‍👦 علاقة (والد/ابن)`;
-            else if (p1.parent && p1.parent === p2.parent) msg = `🤝 إخوة`;
+            const p1 = familyData[id1], p2 = familyData[id2];
+            let msg = "توجد صلة قرابة بينهما.";
+            if (p1.partner === p2.name || p2.partner === p1.name) msg = `💍 ${p1.name} و ${p2.name} زوجان.`;
+            else if (p1.parent === id2) msg = `👨‍👩‍👦 ${p2.name} هو والد/ة ${p1.name}`;
+            else if (p2.parent === id1) msg = `👨‍👩‍👦 ${p1.name} هو والد/ة ${p2.name}`;
+            else if (p1.parent && p1.parent === p2.parent) msg = `🤝 إخوة شقاء.`;
             else {
-                // تتبع الجد (أبناء الخالات والعمومة)
-                const par1 = familyData[p1.parent]; 
-                const par2 = familyData[p2.parent];
-                
-                if (par1 && par1.parent && par2 && par2.parent && par1.parent === par2.parent) {
-                    msg = `🔗 أبناء خالات أو أبناء عمومة (الجد المشترك: ${familyData[par1.parent].name})`;
-                } else if (par1 && par1.parent === id2) {
-                    msg = `👤 ${p2.name} هو (خال/عم) لـ ${p1.name}`;
-                } else if (par2 && par2.parent === id1) {
-                    msg = `👤 ${p1.name} هو (خال/عم) لـ ${p2.name}`;
-                }
+                const gp1 = familyData[p1.parent], gp2 = familyData[p2.parent];
+                if (gp1 && gp2 && gp1.parent === gp2.parent) msg = `🔗 أبناء خالات أو أبناء عمومة (الجد المشترك: ${familyData[gp1.parent].name})`;
             }
             res.innerHTML = msg; res.style.display = 'block';
         }
 
         function openModal(id) {
-            const p = familyData[id]; if(!p) return;
+            const p = familyData[id]; if (!p) return;
             document.getElementById('modalTitle').innerText = p.name;
-            let h = p.partner ? `<p style="background:#f0f7ff; padding:10px; border-radius:10px;"><strong>الزوج/ة:</strong> ${p.partner}</p>` : "";
+            let h = p.partner ? `<div style="background:#f0f7ff; padding:12px; border-radius:10px; margin-bottom:15px;"><strong>الزوج/ة:</strong> ${p.partner}</div>` : "";
             if (p.children) {
                 h += `<h4>الأبناء:</h4>`;
-                p.children.forEach(cid => {
-                    const c = familyData[cid];
-                    h += `<div onclick="openModal('${cid}')" style="padding:12px; border:1px solid #eee; margin-bottom:8px; border-radius:8px; cursor:pointer; background:#fff;">${c ? c.name : cid} ${c ? '←' : ''}</div>`;
+                p.children.forEach(cName => {
+                    const hasLink = familyData[cName];
+                    h += `<div class="child-link" onclick="${hasLink ? `openModal('${cName}')` : ''}">
+                            <span>${cName}</span>
+                            ${hasLink ? '<span style="color:var(--accent)">←</span>' : ''}
+                          </div>`;
                 });
             }
             document.getElementById('modalBody').innerHTML = h;
             document.getElementById('familyModal').style.display = 'flex';
+            document.getElementById('mainSearchRes').style.display = 'none';
         }
         function closeModal() { document.getElementById('familyModal').style.display = 'none'; }
     </script>
