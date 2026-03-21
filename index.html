@@ -7,31 +7,24 @@
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root { --primary: #1e293b; --accent: #2563eb; --bg: #f8fafc; --card: #ffffff; --link: #059669; --text-muted: #64748b; }
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; transition: all 0.2s ease; }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         body { font-family: 'Tajawal', sans-serif; background-color: var(--bg); margin: 0; padding: 15px; display: flex; flex-direction: column; align-items: center; }
-        
         .header { text-align: center; width: 100%; margin-bottom: 20px; }
         .header h2 { color: var(--accent); font-size: 1.6rem; margin-bottom: 5px; }
-        
         .search-container { width: 100%; max-width: 450px; position: relative; margin-bottom: 25px; }
-        #familySearch { width: 100%; padding: 14px 25px; border-radius: 30px; border: 2px solid #e2e8f0; font-size: 16px; outline: none; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
-        
+        #familySearch { width: 100%; padding: 14px 25px; border-radius: 30px; border: 2px solid #e2e8f0; font-size: 16px; outline: none; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); width: 100%; }
         .search-results { position: absolute; top: 110%; left: 0; right: 0; background: white; border-radius: 15px; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); z-index: 2000; max-height: 350px; overflow-y: auto; display: none; border: 1px solid #eee; }
         .search-item { padding: 12px 20px; border-bottom: 1px solid #f1f5f9; cursor: pointer; display: flex; justify-content: space-between; align-items: center; text-align: right; }
         .search-item:hover { background: #f8fafc; }
-
         .main-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; width: 100%; max-width: 500px; }
         .branch-card { background: var(--card); padding: 25px 10px; border-radius: 18px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); text-align: center; border: 1px solid #e2e8f0; font-weight: bold; cursor: pointer; }
-
         .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.7); display: none; justify-content: center; align-items: flex-end; z-index: 1000; backdrop-filter: blur(4px); }
         .modal-content { background: white; width: 100%; max-height: 85vh; border-radius: 30px 30px 0 0; padding: 30px 20px; overflow-y: auto; position: relative; animation: slideUp 0.3s ease-out; }
         @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
-        
         .modal-nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; position: sticky; top: 0; background: white; padding-bottom: 10px; z-index: 10; }
         .back-btn { background: #f1f5f9; border: none; padding: 10px 18px; border-radius: 12px; font-weight: bold; cursor: pointer; }
         .close-btn { background: #fee2e2; color: #dc2626; border: none; border-radius: 50%; width: 40px; height: 40px; cursor: pointer; }
-
-        .partner-box { background: #f0f7ff; padding: 18px; border-radius: 15px; margin-bottom: 15px; border-right: 5px solid var(--accent); }
+        .partner-box { background: #f0f7ff; padding: 15px; border-radius: 15px; margin-bottom: 15px; border-right: 5px solid var(--accent); }
         .child-list { display: grid; grid-template-columns: 1fr; gap: 10px; }
         .child-item { background: #ffffff; padding: 15px; border-radius: 12px; border: 1px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
         .btn-jump { background: var(--accent); color: white; border: none; width: 100%; padding: 12px; border-radius: 10px; margin-top: 10px; font-weight: bold; cursor: pointer; }
@@ -41,19 +34,17 @@
 
     <div class="header">
         <h2>شجرة عائلة السني الرقمية</h2>
-        <p style="color: var(--text-muted);">بحث ذكي يتجاهل فروقات الهمزات والحروف</p>
+        <p style="color: var(--text-muted);">البحث المطور: جرب "نادر هاشم" أو "نادر صالح"</p>
     </div>
 
     <div class="search-container">
-        <input type="text" id="familySearch" placeholder="مثال: اشراقه، رقية، نادر هاشم..." oninput="handleSmartSearch(this.value)">
+        <input type="text" id="familySearch" placeholder="ابحث عن أي فرد..." oninput="handleSmartSearch(this.value)">
         <div id="searchResults" class="search-results"></div>
     </div>
 
     <div class="main-grid">
-        <div class="branch-card" onclick="openModal('soliman')">فرع سليمان (الجاك)</div>
+        <div class="branch-card" onclick="openModal('soliman')">فرع سليمان الجاك</div>
         <div class="branch-card" onclick="openModal('othman')">فرع عثمان (حنان)</div>
-        <div class="branch-card" onclick="openModal('mohammed_s')">فرع محمد (السني)</div>
-        <div class="branch-card" onclick="openModal('bat_almona')">فرع بت المنى</div>
     </div>
 
     <div class="modal" id="familyModal" onclick="closeModal()">
@@ -68,60 +59,56 @@
 
     <script>
         let navHistory = [];
+        
         const familyData = {
-            'soliman': { name: 'سليمان الجاك السني', children: [{ name: 'فاطمة', id: 'fatima_s' }, { name: 'عمر', id: 'omar_s' }, { name: 'نفيسة', id: 'nefisa_s' }, { name: 'النعمة', id: 'neama_s' }, { name: 'مدينة', id: 'madina_s' }, { name: 'أم الحسين' }, { name: 'الروضة' }, { name: 'عبد القيوم' }, { name: 'عبد العظيم' }] },
-            'omar_s': { name: 'عمر سليمان الجاك', partner: 'زينب عثمان حنان', partnerId: 'zeinab_o', children: [{ name: 'سيف الدين', id: 'seif_o' }, { name: 'شمس الدين', id: 'shams_o' }, { name: 'سفيان', id: 'sufian_o' }, { name: 'حيدر', id: 'haidar_o' }, { name: 'نادية', id: 'nadia_o' }, { name: 'إشراقة', id: 'ishraga_o' }, { name: 'رفيدة', id: 'rufaida_o' }, { name: 'اعتدال', id: 'etidal_o' }, { name: 'هويدا', id: 'hweida_o' }, { name: 'رقية', id: 'ruqia_o' }, { name: 'أمل', id: 'amal_o' }] },
-            'saleh_ali': { name: 'صالح علي أبو الحسن', partner: 'نفيسة سليمان الجاك', children: [{ name: 'فتاح' }, { name: 'التجاني' }, { name: 'هاشم', id: 'hashem_s' }, { name: 'معتصم' }, { name: 'عبدالحفيظ' }, { name: 'سيدأحمد' }, { name: 'حسن' }, { name: 'كمال' }, { name: 'بخيتة' }, { name: 'أميرة' }, { name: 'منيرة' }] },
+            'soliman': { name: 'سليمان الجاك السني', children: [{ name: 'فاطمة' }, { name: 'عمر', id: 'omar_s' }, { name: 'نفيسة', id: 'nefisa_s' }, { name: 'النعمة' }] },
+            'omar_s': { name: 'عمر سليمان الجاك', children: [{ name: 'شمس الدين', id: 'shams_o' }, { name: 'حيدر', id: 'haidar_o' }, { name: 'إشراقة', id: 'ishraga_o' }] },
             'nefisa_s': { name: 'نفيسة سليمان الجاك', partner: 'صالح علي أبو الحسن', partnerId: 'saleh_ali', isLinkOnly: true },
-            'hashem_s': { name: 'هاشم صالح علي أبو الحسن', partner: 'إشراقة عمر سليمان', partnerId: 'ishraga_o', children: [{ name: 'نادر' }, { name: 'ريم' }, { name: 'رؤى' }, { name: 'رزان' }] },
-            'ishraga_o': { name: 'إشراقة عمر سليمان الجاك', partner: 'هاشم صالح علي', partnerId: 'hashem_s', isLinkOnly: true },
-            'shams_o': { name: 'شمس الدين عمر سليمان الجاك', partner: 'نهلة محمد عثمان', partnerId: 'nahla_m', children: [{ name: 'سحر' }, { name: 'محمد' }] },
-            'haidar_o': { name: 'حيدر عمر سليمان الجاك', partner: 'نجلاء محمد عثمان', partnerId: 'najla_m', children: [{ name: 'سجود' }, { name: 'توسل' }, { name: 'محمد' }, { name: 'أحمد' }, { name: 'منة الله' }, { name: 'عمر' }] }
+            'saleh_ali': { name: 'صالح علي أبو الحسن', children: [{ name: 'فتاح' }, { name: 'هاشم', id: 'hashem_s' }, { name: 'معتصم' }] },
+            'hashem_s': { name: 'هاشم صالح علي أبو الحسن', partner: 'إشراقة عمر سليمان', children: [{ name: 'نادر' }, { name: 'ريم' }, { name: 'رؤى' }, { name: 'رزان' }] },
+            'ishraga_o': { name: 'إشراقة عمر سليمان الجاك', partner: 'هاشم صالح علي', partnerId: 'hashem_s', isLinkOnly: true }
         };
 
-        // دالة تنظيف النص العربي ليكون البحث غير حساس للفروقات البسيطة
         function normalizeArabic(text) {
             if (!text) return "";
-            return text
-                .replace(/[أإآا]/g, "ا")
-                .replace(/[ىي]/g, "ي")
-                .replace(/[ةه]/g, "ه")
-                .replace(/[\u064B-\u065F]/g, ""); // إزالة التشكيل إن وجد
+            return text.replace(/[أإآا]/g, "ا").replace(/[ىي]/g, "ي").replace(/[ةه]/g, "ه").replace(/[\u064B-\u065F]/g, "").trim().toLowerCase();
         }
 
         function handleSmartSearch(query) {
             const resDiv = document.getElementById('searchResults');
-            const normalizedQuery = normalizeArabic(query.trim().toLowerCase());
-            const searchTerms = normalizedQuery.split(/\s+/).filter(t => t.length > 0);
+            const qNormalized = normalizeArabic(query);
+            const searchTerms = qNormalized.split(/\s+/).filter(t => t.length > 0);
             
-            if (searchTerms.length === 0 || query.length < 2) { 
-                resDiv.style.display = 'none'; 
-                return; 
-            }
+            if (searchTerms.length === 0 || query.length < 2) { resDiv.style.display = 'none'; return; }
 
             let results = [];
 
-            const isMatch = (fullName) => {
-                const normalizedName = normalizeArabic(fullName.toLowerCase());
-                return searchTerms.every(term => normalizedName.includes(term));
+            // وظيفة التحقق من المطابقة
+            const checkMatch = (targetName) => {
+                const normalizedTarget = normalizeArabic(targetName);
+                return searchTerms.every(term => normalizedTarget.includes(term));
             };
 
+            // البحث في البيانات
             Object.keys(familyData).forEach(key => {
                 const person = familyData[key];
                 
-                if (isMatch(person.name)) {
+                // 1. فحص الشخص نفسه
+                if (checkMatch(person.name)) {
                     results.push({ id: key, name: person.name, info: 'رئيس فرع' });
                 }
 
+                // 2. فحص الأبناء
                 if (person.children) {
                     person.children.forEach(child => {
-                        const compositeName = `${child.name} ${person.name}`;
-                        if (isMatch(compositeName)) {
+                        // هنا "الذكاء": ندمج اسم الابن مع اسم الأب المسجل في النظام
+                        const fullNameToSearch = `${child.name} ${person.name}`;
+                        if (checkMatch(fullNameToSearch)) {
                             if (!results.some(r => r.name === child.name)) {
                                 results.push({ 
                                     id: child.id || key, 
                                     name: child.name, 
-                                    info: `فرع ${person.name}` 
+                                    info: `ابن/بنت ${person.name}` 
                                 });
                             }
                         }
@@ -138,24 +125,22 @@
                 `).join('');
                 resDiv.style.display = 'block';
             } else {
-                resDiv.innerHTML = `<div class="search-item" style="color:#94a3b8">لا توجد نتائج مطابقة</div>`;
+                resDiv.innerHTML = `<div class="search-item">لا توجد نتائج لـ "${query}"</div>`;
                 resDiv.style.display = 'block';
             }
         }
 
         function openModal(id, save = true) {
             let p = familyData[id]; 
-            if (!p) p = { name: id, children: [], partner: 'غير مسجل' };
+            if (!p) return;
             if (save) navHistory.push(id);
             updateBack();
             let h = `<h3>${p.name}</h3>`;
-            h += `<div class="partner-box"><strong>الزوج/ة:</strong> ${p.partner || 'غير مسجل'}`;
-            if (p.partnerId) h += `<br><button class="btn-jump" onclick="openModal('${p.partnerId}')">انتقل لصفحة الشريك 🔗</button>`;
-            h += `</div>`;
+            if (p.partner) h += `<div class="partner-box"><strong>الزوج/ة:</strong> ${p.partner}</div>`;
             if (p.isLinkOnly) {
-                h += `<p style="background:#fff7ed; padding:15px; border-radius:12px; font-size:0.9rem;">الأبناء موثقون في فرع الشريك.</p>`;
-                h += `<button class="btn-jump" onclick="openModal('${p.partnerId}')" style="background:var(--link)">عرض الأبناء</button>`;
-            } else if (p.children && p.children.length > 0) {
+                h += `<p>الأبناء مسجلون في فرع الشريك.</p>`;
+                h += `<button class="btn-jump" onclick="openModal('${p.partnerId}')">انتقل لصفحة الشريك</button>`;
+            } else if (p.children) {
                 h += `<h4>الأبناء:</h4><div class="child-list">`;
                 p.children.forEach(c => {
                     h += `<div class="child-item" onclick="${c.id ? `openModal('${c.id}')` : ''}">${c.name} ${c.id ? '←' : ''}</div>`;
@@ -167,10 +152,10 @@
             document.getElementById('searchResults').style.display = 'none';
         }
 
-        function goBack() { if (navHistory.length > 1) { navHistory.pop(); openModal(navHistory[navHistory.length - 1], false); } updateBack(); }
+        function goBack() { if (navHistory.length > 1) { navHistory.pop(); openModal(navHistory[navHistory.length-1], false); } updateBack(); }
         function updateBack() { document.getElementById('backBtn').style.visibility = navHistory.length > 1 ? 'visible' : 'hidden'; }
         function closeModal() { document.getElementById('familyModal').style.display = 'none'; navHistory = []; updateBack(); }
-        window.onclick = function(e) { if (!e.target.closest('.search-container')) document.getElementById('searchResults').style.display = 'none'; }
+        window.onclick = (e) => { if (!e.target.closest('.search-container')) document.getElementById('searchResults').style.display = 'none'; }
     </script>
 </body>
 </html>
