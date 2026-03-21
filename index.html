@@ -6,7 +6,7 @@
     <title>سجل عائلة السني الرقمي</title>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        :root { --primary: #0f172a; --accent: #1e40af; --bg: #f8fafc; --card: #ffffff; --text-muted: #64748b; --gold: #b45309; }
+        :root { --primary: #0f172a; --accent: #1e40af; --bg: #f8fafc; --card: #ffffff; --text-muted: #64748b; --gold: #b45309; --emerald: #059669; }
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; transition: all 0.2s ease; }
         body { font-family: 'Tajawal', sans-serif; background-color: var(--bg); margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; color: var(--primary); }
         .header { text-align: center; width: 100%; margin-bottom: 30px; }
@@ -26,7 +26,11 @@
         .modal-nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid #f1f5f9; padding-bottom: 15px; }
         .back-btn { background: #f1f5f9; border: none; padding: 8px 16px; border-radius: 8px; font-weight: bold; cursor: pointer; }
         .close-btn { background: none; border: none; font-size: 24px; cursor: pointer; color: #94a3b8; }
-        .partner-box { background: #f0f7ff; padding: 18px; border-radius: 12px; margin-bottom: 20px; border-right: 4px solid var(--accent); }
+        
+        /* تصميم صلة القرابة */
+        .partner-box { background: #f0f7ff; padding: 18px; border-radius: 12px; margin-bottom: 20px; border-right: 4px solid var(--accent); position: relative; }
+        .relation-tag { font-size: 0.75rem; background: var(--emerald); color: white; padding: 2px 10px; border-radius: 10px; margin-right: 8px; font-weight: normal; vertical-align: middle; }
+        
         .section-title { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 10px; font-weight: bold; }
         .child-item { background: #ffffff; padding: 15px; border-radius: 10px; border: 1px solid #f1f5f9; display: flex; justify-content: space-between; align-items: center; cursor: pointer; margin-bottom: 8px; }
         .btn-jump { background: var(--primary); color: white; border: none; width: 100%; padding: 14px; border-radius: 10px; margin-top: 10px; font-weight: bold; cursor: pointer; }
@@ -75,37 +79,28 @@
 
     <script>
         let navHistory = [];
+        
+        // قاعدة البيانات مع إضافة حقل 'relation' (صلة القرابة)
         const familyData = {
             'soliman': { name: 'سليمان (الجاك)', children: [{ name: 'عمر', id: 'omar_s' }, { name: 'النعمة', id: 'alniama_s' }, { name: 'نفيسة', id: 'nefisa_s' }, { name: 'مدينة', id: 'madina_s' }, { name: 'فاطمة' }, { name: 'أم الحسين' }, { name: 'الروضة' }, { name: 'عبد القيوم' }, { name: 'عبد العظيم' }] },
             
-            // فرع النعمة سليمان
             'alniama_s': { 
                 name: 'النعمة سليمان (الجاك)', 
                 partner: 'عبدالله محمد صالح', 
                 children: [
-                    { name: 'محمد' }, 
+                    { name: 'محمد (زوج رقية)', id: 'rokia_o' }, 
                     { name: 'محي الدين', id: 'mohi_a' }, 
                     { name: 'أبوالقاسم', id: 'abulgasim_a' }, 
                     { name: 'فايزة' }, 
-                    { name: 'إقبال', id: 'sofian_o' }, // ربط إقبال كزوجة لسفيان
+                    { name: 'إقبال (زوجة سفيان)', id: 'sofian_o' }, 
                     { name: 'سعاد' }
                 ] 
             },
-            'abulgasim_a': {
-                name: 'أبوالقاسم عبدالله محمد صالح',
-                partner: 'رميساء عبدالرحمن',
-                children: [{ name: 'عبدالله' }, { name: 'يسرا' }, { name: 'يمنى' }]
-            },
-            'mohi_a': {
-                name: 'محي الدين عبدالله محمد صالح',
-                partner: 'شيماء بخيت',
-                children: [{ name: 'مزن' }, { name: 'آسر' }]
-            },
 
-            // فرع عمر سليمان
             'omar_s': { 
                 name: 'عمر سليمان (الجاك)', 
                 partner: 'زينب عثمان (حنان)', 
+                relation: 'ابنة خاله', // علاقة زينب بعمر
                 partnerId: 'zeinab_o', 
                 children: [
                     { name: 'شمس الدين', id: 'shams_o' }, { name: 'حيدر', id: 'haidar_o' }, 
@@ -115,25 +110,35 @@
                     { name: 'رقية', id: 'rokia_o' }, { name: 'أمل', id: 'amal_o' }, { name: 'هويدا', id: 'howaida_o' }
                 ] 
             },
-            'etidal_o': { name: 'اعتدال عمر سليمان (الجاك)', partner: 'عبدالملك محمد علي فضيل', children: [{ name: 'محمد' }, { name: 'مصطفى' }] },
-            'howaida_o': { name: 'هويدا عمر سليمان (الجاك)', partner: 'محمد خير عبدالرحمن', children: [{ name: 'عامر' }, { name: 'أحمد' }, { name: 'أنس' }, { name: 'أواب' }, { name: 'مصطفى' }, { name: 'زينب' }] },
+
             'sofian_o': { 
                 name: 'سفيان عمر سليمان (الجاك)', 
                 partner: 'إقبال عبدالله محمد صالح', 
+                relation: 'ابنة عمته', // إقبال ابنة النعمة (عمة سفيان)
                 children: [{ name: 'أمل' }, { name: 'آية' }, { name: 'تسنيم' }, { name: 'نون' }, { name: 'تسابيح' }] 
             },
+
+            'rokia_o': { 
+                name: 'رقية عمر سليمان (الجاك)', 
+                partner: 'محمد عبدالله محمد صالح', 
+                relation: 'ابن عمتها', // محمد ابن النعمة (عمة رقية)
+                children: [{ name: 'امتثال' }, { name: 'عبير' }, { name: 'إيمان' }, { name: 'أحمد' }] 
+            },
+
+            'zeinab_o': { name: 'زينب عثمان (حنان)', partner: 'عمر سليمان (الجاك)', relation: 'ابن عمتها', partnerId: 'omar_s', isLinkOnly: true },
+            
+            'etidal_o': { name: 'اعتدال عمر سليمان (الجاك)', partner: 'عبدالملك محمد علي فضيل', children: [{ name: 'محمد' }, { name: 'مصطفى' }] },
+            'howaida_o': { name: 'هويدا عمر سليمان (الجاك)', partner: 'محمد خير عبدالرحمن', children: [{ name: 'عامر' }, { name: 'أحمد' }, { name: 'أنس' }, { name: 'أواب' }, { name: 'مصطفى' }, { name: 'زينب' }] },
             'haidar_o': { name: 'حيدر عمر سليمان (الجاك)', partner: 'نجلاء عبدالله القمر', children: [{ name: 'سجود' }, { name: 'توسل' }, { name: 'محمد' }, { name: 'عمر' }, { name: 'أحمد' }, { name: 'منة الله' }, { name: 'جود' }] },
             'seif_o': { name: 'سيف الدين عمر سليمان (الجاك)', partner: 'أميرة التهامي', children: [{ name: 'آلاء' }, { name: 'إسراء' }, { name: 'محمد' }, { name: 'أحمد' }, { name: 'تنزيل' }] },
             'nadia_o': { name: 'نادية عمر سليمان (الجاك)', partner: 'إبراهيم الصافي' },
             'rofaida_o': { name: 'رفيدة عمر سليمان (الجاك)', partner: 'سليمان خضر', children: [{ name: 'شهد' }, { name: 'صفاء' }, { name: 'التاج' }, { name: 'مدثر' }, { name: 'سيف الدين' }, { name: 'وعد' }] },
-            'rokia_o': { name: 'رقية عمر سليمان (الجاك)', partner: 'محمد عبدالله محمد صالح', children: [{ name: 'امتثال' }, { name: 'عبير' }, { name: 'إيمان' }, { name: 'أحمد' }] },
             'amal_o': { name: 'أمل عمر سليمان (الجاك)', partner: 'يوسف التهامي', children: [{ name: 'حفية' }, { name: 'مآب' }] },
-
-            // الفروع الأخرى الأساسية
+            'abulgasim_a': { name: 'أبوالقاسم عبدالله محمد صالح', partner: 'رميساء عبدالرحمن', children: [{ name: 'عبدالله' }, { name: 'يسرا' }, { name: 'يمنى' }] },
+            'mohi_a': { name: 'محي الدين عبدالله محمد صالح', partner: 'شيماء بخيت', children: [{ name: 'مزن' }, { name: 'آسر' }] },
             'othman': { name: 'عثمان (حنان)', children: [{ name: 'محمد', id: 'mohammed_o' }, { name: 'عبدالله' }, { name: 'حسن' }, { name: 'زينب', id: 'zeinab_o' }, { name: 'هلالة' }] },
             'mohammed_s': { name: 'محمد (السني)', children: [{ name: 'عباس' }, { name: 'بخيت' }] },
             'bat_almona': { name: 'بت المنى (السني)', children: [{ name: 'العوض' }, { name: 'علي' }] },
-            'zeinab_o': { name: 'زينب عثمان (حنان)', partner: 'عمر سليمان (الجاك)', partnerId: 'omar_s', isLinkOnly: true },
             'mohammed_o': { name: 'محمد عثمان (حنان)', partner: 'مدينة سليمان (الجاك)', partnerId: 'madina_s', children: [{ name: 'أميمة' }, { name: 'نهلة' }, { name: 'نجلاء' }] },
             'madina_s': { name: 'مدينة سليمان (الجاك)', partner: 'محمد عثمان (حنان)', partnerId: 'mohammed_o', isLinkOnly: true },
             'nefisa_s': { name: 'نفيسة سليمان (الجاك)', partner: 'صالح علي أبو الحسن', partnerId: 'saleh_ali', isLinkOnly: true },
@@ -180,7 +185,16 @@
             if (save) navHistory.push(id);
             updateBack();
             let h = `<h3 style="margin:0 0 15px 0; color:var(--primary); font-size:1.2rem;">${p.name}</h3>`;
-            if (p.partner) h += `<div class="section-title">بيانات الشريك</div><div class="partner-box"><strong>الزوج/ة:</strong> ${p.partner}</div>`;
+            
+            if (p.partner) {
+                // الجزء الذكي لعرض صلة القرابة
+                const relationSpan = p.relation ? `<span class="relation-tag">${p.relation}</span>` : "";
+                h += `<div class="section-title">بيانات الشريك</div>
+                      <div class="partner-box">
+                        <strong>الزوج/ة:</strong> ${p.partner} ${relationSpan}
+                      </div>`;
+            }
+
             if (p.isLinkOnly) {
                 h += `<p style="font-size:0.9rem; color:var(--text-muted);">الأبناء والبيانات التفصيلية موثقون في سجل الشريك.</p>`;
                 h += `<button class="btn-jump" onclick="openModal('${p.partnerId}')">انتقل لسجل الشريك 🔗</button>`;
