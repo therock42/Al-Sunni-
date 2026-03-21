@@ -3,121 +3,265 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>شجرة عائلة السني - النسخة النظيفة</title>
+    <title>شجرة عائلة السني - النسخة المعتمدة</title>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        :root { --primary: #1e293b; --accent: #2563eb; --bg: #f1f5f9; }
-        body { font-family: 'Tajawal', sans-serif; background: var(--bg); margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; }
-        
-        .header { text-align: center; margin-bottom: 20px; }
-        
-        /* البحث الذكي الثابت */
-        .search-container { width: 100%; max-width: 500px; margin-bottom: 30px; position: relative; z-index: 1000; }
-        #searchInput { width: 100%; padding: 15px; border-radius: 12px; border: 2px solid #ddd; outline: none; font-family: 'Tajawal'; }
-        .sugg-box { position: absolute; top: 100%; left: 0; right: 0; background: white; border-radius: 0 0 12px 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); display: none; max-height: 200px; overflow-y: auto; }
-        .sugg-item { padding: 12px; border-bottom: 1px solid #eee; cursor: pointer; }
-        .sugg-item:hover { background: #f0f7ff; }
+        :root {
+            --primary: #1e293b;
+            --accent: #2563eb;
+            --link-color: #059669;
+            --bg: #f1f5f9;
+            --card-bg: #ffffff;
+        }
 
-        /* الشبكة الرئيسية */
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; width: 100%; max-width: 900px; }
-        .card { background: white; padding: 25px; border-radius: 15px; text-align: center; cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.05); font-weight: bold; border: 1px solid #e2e8f0; }
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background-color: var(--bg);
+            margin: 0; padding: 20px;
+            display: flex; flex-direction: column; align-items: center;
+            color: var(--primary);
+        }
 
-        /* النافذة المنبثقة */
-        .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(5px); display: none; justify-content: center; align-items: center; z-index: 2000; }
-        .modal-content { background: white; padding: 30px; border-radius: 20px; width: 90%; max-width: 450px; position: relative; }
-        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-        .btn-back { background: #f1f5f9; border: none; padding: 8px 15px; border-radius: 8px; cursor: pointer; font-weight: bold; visibility: hidden; }
-        .btn-close { border: none; background: #fee2e2; color: #dc2626; border-radius: 50%; width: 35px; height: 35px; cursor: pointer; }
-        
-        .list { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        .item { background: #f8fafc; padding: 12px; border-radius: 10px; border: 1px solid #eee; text-align: center; cursor: pointer; }
-        .link { font-weight: bold; color: var(--accent); border-color: var(--accent); }
+        .header-box {
+            text-align: center; background: white; padding: 25px;
+            border-radius: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            width: 100%; max-width: 900px; margin-bottom: 20px;
+        }
+
+        .search-container {
+            width: 100%; max-width: 500px; margin-bottom: 30px; position: relative;
+        }
+        #familySearch {
+            width: 100%; padding: 15px 20px; border-radius: 30px;
+            border: 2px solid #e2e8f0; font-family: 'Tajawal'; font-size: 1rem;
+            outline: none; transition: 0.3s; box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+        }
+        #familySearch:focus { border-color: var(--accent); box-shadow: 0 0 10px rgba(37,99,235,0.1); }
+
+        .main-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px; width: 100%; max-width: 1000px;
+        }
+
+        .branch-card {
+            background: var(--card-bg); padding: 25px; border-radius: 18px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.02); cursor: pointer;
+            text-align: center; border: 1px solid #e2e8f0; transition: 0.3s ease;
+        }
+        .branch-card:hover { border-color: var(--accent); transform: translateY(-5px); }
+
+        .modal {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(10px);
+            display: none; justify-content: center; align-items: center; z-index: 2000;
+        }
+
+        .modal-content {
+            background: white; padding: 35px; border-radius: 25px;
+            width: 90%; max-width: 650px; max-height: 85vh; overflow-y: auto;
+            position: relative; animation: slideUp 0.3s ease;
+        }
+
+        .modal-nav {
+            display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;
+        }
+
+        .back-btn {
+            background: #f1f5f9; border: none; padding: 8px 15px; border-radius: 10px;
+            cursor: pointer; font-family: 'Tajawal'; font-weight: bold; color: var(--primary);
+        }
+
+        .close-btn { border: none; background: #fee2e2; color: #dc2626; border-radius: 50%; width: 35px; height: 35px; cursor: pointer; }
+
+        .partner-box {
+            background: #eff6ff; padding: 18px; border-radius: 15px;
+            margin: 15px 0; border-right: 5px solid var(--accent);
+        }
+
+        .child-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
+
+        .child-item {
+            background: #f8fafc; padding: 12px; border-radius: 10px;
+            border: 1px solid #e2e8f0; cursor: pointer; text-align: center;
+        }
+        .child-item.has-link { border-color: var(--link-color); background: #f0fdf4; font-weight: bold; }
+
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
 
-    <div class="header">
-        <h2 style="color:var(--primary)">شجرة عائلة السني</h2>
-        <p style="color:#64748b">الروضة وعبدالغني فروع مستقلة</p>
+    <div class="header-box">
+        <h2 style="margin:0; color:var(--accent)">شجرة عائلة السني التفاعلية</h2>
+        <p style="color:#64748b">تم الفصل النهائي بين الروضة وعبد الغني</p>
     </div>
 
     <div class="search-container">
-        <input type="text" id="searchInput" placeholder="ابحث عن اسم..." oninput="doSearch(this.value)" autocomplete="off">
-        <div id="suggBox" class="sugg-box"></div>
+        <input type="text" id="familySearch" placeholder="ابحث بالإسم..." onkeyup="handleSearch()">
     </div>
 
-    <div class="grid">
-        <div class="card" onclick="openNode('soliman')">سليمان (الجاك)</div>
-        <div class="card" onclick="openNode('othman')">عثمان (حنان)</div>
-        <div class="card" onclick="openNode('mohammed_s')">محمد (السني)</div>
-        <div class="card" onclick="openNode('bat_almona')">بت المنى</div>
+    <div class="main-grid">
+        <div class="branch-card" onclick="openModal('soliman')"><h3>فرع سليمان (الجاك)</h3></div>
+        <div class="branch-card" onclick="openModal('othman')"><h3>فرع عثمان (حنان)</h3></div>
+        <div class="branch-card" onclick="openModal('mohammed_s')"><h3>فرع محمد (السني)</h3></div>
+        <div class="branch-card" onclick="openModal('bat_almona')"><h3>فرع بت المنى</h3></div>
     </div>
 
-    <div class="modal" id="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button class="btn-back" id="btnBack" onclick="goBack()">← عودة</button>
-                <button class="btn-close" onclick="closeModal()">✕</button>
+    <div class="modal" id="familyModal" onclick="closeModal()">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <div class="modal-nav">
+                <button class="back-btn" id="backBtn" onclick="goBack()" style="visibility: hidden;">← عودة للخلف</button>
+                <button class="close-btn" onclick="closeModal()">✕</button>
             </div>
             <div id="modalBody"></div>
         </div>
     </div>
 
     <script>
-        let history = [];
-        const family = {
-            'soliman': { n: 'سليمان (الجاك)', c: [{n:'فاطمة'}, {n:'عمر', id:'omar'}, {n:'نفيسة'}, {n:'النعمة'}, {n:'الروضة', id:'rawda'}, {n:'عبد الغني', id:'ghani'}] },
-            'omar': { n: 'عمر سليمان الجاك', c: [{n:'سفيان'}, {n:'إشراقة'}, {n:'هويدا', id:'hweida'}] },
-            'hweida': { n: 'هويدا عمر سليمان', c: [{n:'أنس'}, {name:'عامر'}, {n:'أحمد'}] },
-            'rawda': { n: 'الروضة سليمان الجاك', c: [] },
-            'ghani': { n: 'عبد الغني سليمان الجاك', c: [] },
-            'othman': { n: 'عثمان (حنان)', c: [{n:'زينب'}, {n:'محمد'}, {n:'عبد الله', id:'abdullah'}] },
-            'abdullah': { n: 'عبد الله عثمان حنان', c: [{n:'المعز'}, {n:'مجدي'}, {n:'محمد'}, {n:'منذر'}, {n:'رحاب'}] },
-            'mohammed_s': { n: 'محمد (السني)', c: [{n:'عباس', id:'abbas'}] },
-            'abbas': { n: 'عباس محمد السني', c: [{n:'نازك'}, {n:'محمد'}, {n:'مهند'}, {n:'مصطفى'}] },
-            'bat_almona': { n: 'بت المنى', c: [{n:'العوض'}, {n:'على'}] }
+        let navigationHistory = [];
+
+        const familyData = {
+            'soliman': {
+                name: 'سليمان (الجاك)', partner: 'غير مسجل',
+                children: [
+                    { name: 'فاطمة', id: 'fatima_s' }, 
+                    { name: 'عمر', id: 'omar_s' },
+                    { name: 'نفيسة', id: 'nefisa_s' }, 
+                    { name: 'النعمة', id: 'elneama_s' },
+                    { name: 'أم الحسين' }, 
+                    { name: 'الروضة', id: 'rawda_s' }, // تم إضافة ID للفصل
+                    { name: 'عبد الغني', id: 'abdelghani_s' }, // تم إضافة ID للفصل
+                    { name: 'مدينة' }, 
+                    { name: 'عبد القيوم' }, 
+                    { name: 'عبد العظيم' }
+                ]
+            },
+            // فرع الروضة المستقل
+            'rawda_s': {
+                name: 'الروضة سليمان الجاك', partner: 'غير مسجل',
+                children: [] 
+            },
+            // فرع عبد الغني المستقل
+            'abdelghani_s': {
+                name: 'عبد الغني سليمان الجاك', partner: 'غير مسجل',
+                children: [] 
+            },
+            'othman': {
+                name: 'عثمان (حنان)', partner: 'غير مسجل',
+                children: [
+                    { name: 'زينب', id: 'zeinab_o' }, 
+                    { name: 'محمد' }, 
+                    { name: 'فاطمة' }, 
+                    { name: 'عبد الله', id: 'abdullah_o' }
+                ]
+            },
+            'abdullah_o': {
+                name: 'عبد الله عثمان (حنان)', partner: 'غير مسجل',
+                children: [
+                    { name: 'المعز' }, { name: 'مجدي' }, { name: 'محمد' }, 
+                    { name: 'منذر' }, { name: 'رحاب' }, { name: 'رانيا' }, 
+                    { name: 'رندا' }, { name: 'ريان' }
+                ]
+            },
+            'mohammed_s': {
+                name: 'محمد (السني)', partner: 'غير مسجل',
+                children: [
+                    { name: 'بخيت' }, { name: 'عوض الله' }, 
+                    { name: 'عباس', id: 'abbas_m' }, 
+                    { name: 'عبد الرحمن' }
+                ]
+            },
+            'abbas_m': {
+                name: 'عباس محمد (السني)', partner: 'غير مسجل',
+                children: [
+                    { name: 'نازك' }, { name: 'محمد' }, { name: 'مهند' }, 
+                    { name: 'مصطفي' }, { name: 'مهتدي' }
+                ]
+            },
+            'omar_s': {
+                name: 'عمر سليمان (الجاك)', partner: 'زينب عثمان (حنان)', partnerId: 'zeinab_o',
+                children: [
+                    { name: 'سيف الدين' }, { name: 'شمس الدين' },
+                    { name: 'سفيان', id: 'sufian_o' }, { name: 'حيدر' },
+                    { name: 'نادية' }, { name: 'إشراقة', id: 'ishraga_o' },
+                    { name: 'رفيدة' }, { name: 'اعتدال', id: 'etidal_o' },
+                    { name: 'هويدا', id: 'hweida_o' },
+                    { name: 'رقية' }, { name: 'أمل' }
+                ]
+            },
+            'hweida_o': {
+                name: 'هويدا عمر سليمان', partner: 'محمد خير عبدالرحمن',
+                children: [
+                    { name: 'عامر' }, { name: 'أحمد' }, { name: 'أواب' }, 
+                    { name: 'أنس' }, { name: 'زينب' }, { name: 'مصطفى' }
+                ]
+            },
+            'bat_almona': {
+                name: 'بت المنى', partner: 'غير مسجل',
+                children: [{ name: 'العوض' }, { name: 'على' }, { name: 'نفيسة' }, { name: 'مسرة' }]
+            },
+            'zeinab_o': { name: 'زينب عثمان (حنان)', partner: 'عمر سليمان (الجاك)', partnerId: 'omar_s', isLinkOnly: true },
+            'fatima_s': { name: 'فاطمة سليمان (الجاك)', partner: 'محمد علي فضيل', children: [{ name: 'عبد الرحمن' }, { name: 'عبد الملك', id: 'abdelmalek_f' }] },
+            'nefisa_s': { name: 'نفيسة سليمان (الجاك)', partner: 'صالح علي أبوالحسن', children: [{ name: 'هاشم', id: 'hashem_s' }] },
+            'etidal_o': { name: 'اعتدال عمر سليمان', partner: 'عبد الملك محمد علي فضيل', partnerId: 'abdelmalek_f', children: [{ name: 'محمد' }] },
+            'abdelmalek_f': { name: 'عبد الملك محمد علي فضيل', partner: 'اعتدال عمر سليمان', partnerId: 'etidal_o', isLinkOnly: true },
+            'ishraga_o': { name: 'إشراقة عمر سليمان', partner: 'هاشم صالح علي', partnerId: 'hashem_s', children: [{ name: 'نادر' }] },
+            'hashem_s': { name: 'هاشم صالح علي', partner: 'إشراقة عمر سليمان', partnerId: 'ishraga_o', isLinkOnly: true }
         };
 
-        function norm(t) { return t.replace(/[أإآ]/g, "ا").replace(/ة/g, "ه").replace(/[ىي]/g, "ي").trim(); }
-
-        function doSearch(val) {
-            const box = document.getElementById('suggBox');
-            const q = norm(val);
-            if (q.length < 1) { box.style.display = 'none'; return; }
-            let res = [];
-            for (let id in family) {
-                if (norm(family[id].n).includes(q)) res.push({n: family[id].n, id: id});
-                family[id].c.forEach(child => {
-                    if (norm(child.n).includes(q)) res.push({n: child.n, id: child.id || id});
-                });
+        function openModal(id, saveToHistory = true) {
+            const p = familyData[id]; if (!p) return;
+            if (saveToHistory && navigationHistory[navigationHistory.length - 1] !== id) {
+                navigationHistory.push(id);
             }
-            if (res.length > 0) {
-                box.innerHTML = res.slice(0, 8).map(r => `<div class="sugg-item" onclick="select('${r.id}')">${r.n}</div>`).join('');
-                box.style.display = 'block';
-            } else { box.style.display = 'none'; }
+            updateBackButton();
+            let h = `<h2 style="color:var(--accent); margin-top:0;">${p.name}</h2>`;
+            h += `<div class="partner-box"><strong>الزوج / الزوجة:</strong> ${p.partner}</div>`;
+            if (p.isLinkOnly) {
+                h += `<button style="background:var(--accent); color:white; border:none; padding:10px; border-radius:8px; width:100%; cursor:pointer;" onclick="openModal('${p.partnerId}')">عرض أسرة ${p.partner} 📁</button>`;
+            } else if (p.children) {
+                h += `<h3>الأبناء:</h3><div class="child-list">`;
+                p.children.forEach(c => {
+                    h += `<div class="child-item ${c.id ? 'has-link' : ''}" onclick="${c.id ? `openModal('${c.id}')` : ''}">
+                        ${c.name} ${c.id ? '←' : ''}
+                    </div>`;
+                });
+                h += `</div>`;
+            }
+            document.getElementById('modalBody').innerHTML = h;
+            document.getElementById('familyModal').style.display = 'flex';
         }
 
-        function select(id) {
-            document.getElementById('suggBox').style.display = 'none';
-            document.getElementById('searchInput').value = "";
-            openNode(id);
+        function handleSearch() {
+            const query = document.getElementById('familySearch').value.trim();
+            if (query.length < 2) return;
+            for (let id in familyData) {
+                if (familyData[id].name.includes(query)) { openModal(id); return; }
+                if (familyData[id].children) {
+                    for (let child of familyData[id].children) {
+                        if (child.name.includes(query)) { openModal(child.id || id); return; }
+                    }
+                }
+            }
         }
 
-        function openNode(id, save = true) {
-            const p = family[id]; if (!p) return;
-            if (save) history.push(id);
-            document.getElementById('btnBack').style.visibility = history.length > 1 ? 'visible' : 'hidden';
-            let html = `<h3>${p.n}</h3><div class="list">`;
-            p.c.forEach(child => {
-                html += `<div class="item ${child.id ? 'link' : ''}" onclick="${child.id ? `openNode('${child.id}')` : ''}">${child.n} ${child.id ? '←' : ''}</div>`;
-            });
-            document.getElementById('modalBody').innerHTML = html + `</div>`;
-            document.getElementById('modal').style.display = 'flex';
+        function goBack() {
+            if (navigationHistory.length > 1) {
+                navigationHistory.pop();
+                openModal(navigationHistory[navigationHistory.length - 1], false);
+            }
+            updateBackButton();
         }
 
-        function goBack() { history.pop(); openNode(history[history.length - 1], false); }
-        function closeModal() { document.getElementById('modal').style.display = 'none'; history = []; }
-        window.onclick = e => { if (e.target.id === 'modal') closeModal(); if (!e.target.matches('#searchInput')) document.getElementById('suggBox').style.display = 'none'; }
+        function updateBackButton() {
+            document.getElementById('backBtn').style.visibility = navigationHistory.length > 1 ? 'visible' : 'hidden';
+        }
+
+        function closeModal() {
+            document.getElementById('familyModal').style.display = 'none';
+            navigationHistory = [];
+            updateBackButton();
+        }
     </script>
 </body>
 </html>
