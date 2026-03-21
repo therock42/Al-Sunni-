@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>شجرة عائلة السني - النسخة الذكية</title>
+    <title>شجرة عائلة السني - النسخة المصححة بالكامل</title>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root { --primary: #1e293b; --accent: #2563eb; --link-color: #059669; --bg: #f1f5f9; --card-bg: #ffffff; --text-muted: #64748b; }
@@ -20,13 +20,11 @@
         .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(10px); display: none; justify-content: center; align-items: center; z-index: 6000; }
         .modal-content { background: white; padding: 35px; border-radius: 25px; width: 90%; max-width: 650px; max-height: 85vh; overflow-y: auto; position: relative; }
         .modal-nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-        .back-btn { background: #f1f5f9; border: none; padding: 8px 15px; border-radius: 10px; cursor: pointer; font-weight: bold; }
+        .back-btn { background: #f1f5f9; border: none; padding: 8px 15px; border-radius: 10px; cursor: pointer; font-weight: bold; font-family: 'Tajawal'; }
         .close-btn { border: none; background: #fee2e2; color: #dc2626; border-radius: 50%; width: 35px; height: 35px; cursor: pointer; }
         .partner-box { background: #eff6ff; padding: 18px; border-radius: 15px; margin: 15px 0; border-right: 5px solid var(--accent); }
         .child-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
-        /* تصميم الابن الذي له فروع */
         .child-item.has-branch { background: #f0fdf4; border: 1px solid var(--link-color); color: var(--link-color); cursor: pointer; font-weight: bold; padding: 12px; border-radius: 10px; text-align: center; }
-        /* تصميم الابن الذي ليس له فروع */
         .child-item.no-branch { background: #f8fafc; border: 1px solid #e2e8f0; color: var(--primary); cursor: default; padding: 12px; border-radius: 10px; text-align: center; }
         .view-family-btn { background: var(--accent); color: white; border: none; padding: 12px; border-radius: 10px; width: 100%; cursor: pointer; font-family: 'Tajawal'; font-weight: bold; margin-top: 10px; }
     </style>
@@ -62,7 +60,14 @@
     <script>
         let navigationHistory = [];
 
-        // القاعدة: الأبناء تحت الأب دائمًا.
+        // خريطة شاملة ومحدثة لكل شخص له فرع أو زوج
+        const idMap = {
+            'عمر': 'omar', 'عبد الله': 'abdullah', 'عباس': 'abbas', 'إشراقة': 'ishraga', 
+            'هويدا': 'hweida', 'زينب': 'zeinab', 'اعتدال': 'etidal', 'فاطمة': 'fatima', 
+            'نفيسة': 'nefisa', 'الروضة': 'rawda', 'عبد الغني': 'ghani', 'هاشم': 'hashem',
+            'عبد الملك': 'abdelmalek', 'سليمان': 'soliman', 'عثمان': 'othman', 'محمد': 'mohammed_s'
+        };
+
         const familyData = {
             'soliman': { name: 'سليمان (الجاك)', children: ['عمر', 'الروضة', 'عبد الغني', 'فاطمة', 'نفيسة', 'النعمة', 'أم الحسين', 'مدينة', 'عبد القيوم', 'عبد العظيم'] },
             'othman': { name: 'عثمان (حنان)', children: ['عبد الله', 'زينب', 'محمد', 'فاطمة'] },
@@ -73,24 +78,17 @@
             'hashem': { name: 'هاشم صالح علي', partner: 'إشراقة عمر سليمان', children: ['نادر', 'ريم', 'رؤي', 'رزان'] },
             'abdelmalek': { name: 'عبد الملك محمد علي فضيل', partner: 'اعتدال عمر سليمان', children: ['محمد'] },
             'hweida': { name: 'هويدا عمر سليمان', partner: 'محمد خير عبدالرحمن', children: ['عامر', 'أحمد', 'أواب', 'أنس', 'زينب', 'مصطفى'] },
-            
-            // الأمهات (روابط فقط)
             'zeinab': { name: 'زينب عثمان حنان', partner: 'عمر سليمان الجاك', isMother: true, partnerId: 'omar' },
             'ishraga': { name: 'إشراقة عمر سليمان', partner: 'هاشم صالح علي', isMother: true, partnerId: 'hashem' },
             'etidal': { name: 'اعتدال عمر سليمان', partner: 'عبد الملك فضيل', isMother: true, partnerId: 'abdelmalek' },
             'fatima': { name: 'فاطمة سليمان الجاك', partner: 'محمد علي فضيل', isMother: true, partnerId: 'abdelmalek' },
             'nefisa': { name: 'نفيسة سليمان الجاك', partner: 'صالح علي أبوالحسن', isMother: true, partnerId: 'hashem' },
             'rawda': { name: 'الروضة سليمان الجاك', children: [] },
-            'ghani': { name: 'عبد الغني سليمان الجاك', children: [] }
+            'ghani': { name: 'عبد الغني سليمان الجاك', children: [] },
+            'bat_almona': { name: 'بت المنى', children: ['العوض', 'على', 'نفيسة', 'مسرة'] }
         };
 
-        const idMap = {
-            'عمر': 'omar', 'عبد الله': 'abdullah', 'عباس': 'abbas', 'إشراقة': 'ishraga', 
-            'هويدا': 'hweida', 'زينب': 'zeinab', 'اعتدال': 'etidal', 'فاطمة': 'fatima', 
-            'نفيسة': 'nefisa', 'الروضة': 'rawda', 'عبد الغني': 'ghani', 'هاشم': 'hashem'
-        };
-
-        function norm(t) { return t.replace(/[أإآ]/g, "ا").replace(/ة/g, "ه").replace(/[ىي]/g, "ي").trim(); }
+        function norm(t) { return t ? t.replace(/[أإآ]/g, "ا").replace(/ة/g, "ه").replace(/[ىي]/g, "ي").trim() : ""; }
 
         function handleSearch() {
             const input = document.getElementById('familySearch');
@@ -99,17 +97,16 @@
             if (q.length < 2) { resBox.style.display = 'none'; return; }
             let matches = [];
             for (let id in familyData) {
-                if (norm(familyData[id].name).includes(q)) matches.push({ n: familyData[id].name, id: id });
-                if (familyData[id].children) {
-                    familyData[id].children.forEach(c => {
-                        const fullName = `${c} ${familyData[id].name}`;
-                        if (norm(fullName).includes(q)) matches.push({ n: fullName, id: idMap[c] || 'no_link' });
+                const p = familyData[id];
+                if (norm(p.name).includes(q)) matches.push({ n: p.name, id: id });
+                if (p.children) {
+                    p.children.forEach(c => {
+                        if (norm(c).includes(q)) matches.push({ n: c + " بن " + p.name, id: idMap[c] || id });
                     });
                 }
             }
             if (matches.length > 0) {
-                const unique = Array.from(new Set(matches.filter(m => m.id !== 'no_link').map(a => a.n))).map(n => matches.find(a => a.n === n));
-                resBox.innerHTML = unique.map(m => `<div class="search-item" onclick="selectSearch('${m.id}')">${m.n}</div>`).join('');
+                resBox.innerHTML = matches.slice(0, 10).map(m => `<div class="search-item" onclick="selectSearch('${m.id}')">${m.n}</div>`).join('');
                 resBox.style.display = 'block';
             } else { resBox.style.display = 'none'; }
         }
@@ -117,11 +114,13 @@
         function selectSearch(id) { 
             document.getElementById('searchResults').style.display = 'none'; 
             document.getElementById('familySearch').value = ""; 
-            openNode(id); 
+            if(familyData[id]) openNode(id); 
         }
 
         function openNode(id, save = true) {
-            const p = familyData[id]; if (!p) return;
+            const p = familyData[id]; 
+            if (!p) return; // الحماية الأساسية
+
             if (save) navigationHistory.push(id);
             updateBackButton();
             
@@ -135,15 +134,16 @@
                 h += `<h3>الأبناء:</h3><div class="child-list">`;
                 p.children.forEach(c => {
                     const cid = idMap[c];
-                    // فحص إذا كان للابن فروع (أبناء أو صفحة تعريفية)
-                    const hasBranch = cid && (familyData[cid]?.children?.length > 0 || familyData[cid]?.isMother);
-                    if (hasBranch) {
+                    // دقة الفحص: إذا كان الاسم موجود في Data أو له ID معروف
+                    if (cid && familyData[cid]) {
                         h += `<div class="child-item has-branch" onclick="openNode('${cid}')">${c} ←</div>`;
                     } else {
                         h += `<div class="child-item no-branch">${c}</div>`;
                     }
                 });
                 h += `</div>`;
+            } else {
+                h += `<p style="text-align:center; color:var(--text-muted);">لا توجد بيانات فروع حالياً.</p>`;
             }
             document.getElementById('modalBody').innerHTML = h;
             document.getElementById('familyModal').style.display = 'flex';
