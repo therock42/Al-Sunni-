@@ -3,16 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>شجرة عائلة السني - النسخة المعتمدة 2026</title>
+    <title>شجرة عائلة السني - النسخة الذكية</title>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        :root { --primary: #1e293b; --accent: #2563eb; --link-color: #059669; --bg: #f1f5f9; --card-bg: #ffffff; }
-        body { font-family: 'Tajawal', sans-serif; background-color: var(--bg); margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; color: var(--primary); min-height: 100vh; }
+        :root { --primary: #1e293b; --accent: #2563eb; --link-color: #059669; --bg: #f1f5f9; --card-bg: #ffffff; --text-muted: #64748b; }
+        body { font-family: 'Tajawal', sans-serif; background-color: var(--bg); margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; color: var(--primary); }
         .header-box { text-align: center; background: white; padding: 25px; border-radius: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); width: 100%; max-width: 900px; margin-bottom: 20px; }
         .search-container { width: 100%; max-width: 550px; margin-bottom: 30px; position: relative; }
         #familySearch { width: 100%; padding: 15px 20px; border-radius: 30px; border: 2px solid #e2e8f0; font-family: 'Tajawal'; font-size: 1rem; outline: none; transition: 0.3s; box-sizing: border-box; }
         .search-results { position: absolute; top: 100%; left: 0; right: 0; background: white; border-radius: 15px; margin-top: 5px; box-shadow: 0 10px 20px rgba(0,0,0,0.1); z-index: 5000; max-height: 250px; overflow-y: auto; display: none; }
-        .search-item { padding: 12px 20px; cursor: pointer; border-bottom: 1px solid #f1f5f9; font-size: 0.9rem; }
+        .search-item { padding: 12px 20px; cursor: pointer; border-bottom: 1px solid #f1f5f9; }
         .search-item:hover { background: #f0f7ff; color: var(--accent); }
         .main-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; width: 100%; max-width: 1000px; }
         .branch-card { background: var(--card-bg); padding: 25px; border-radius: 18px; box-shadow: 0 4px 6px rgba(0,0,0,0.02); cursor: pointer; text-align: center; border: 1px solid #e2e8f0; transition: 0.3s ease; }
@@ -20,11 +20,14 @@
         .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(10px); display: none; justify-content: center; align-items: center; z-index: 6000; }
         .modal-content { background: white; padding: 35px; border-radius: 25px; width: 90%; max-width: 650px; max-height: 85vh; overflow-y: auto; position: relative; }
         .modal-nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-        .back-btn { background: #f1f5f9; border: none; padding: 8px 15px; border-radius: 10px; cursor: pointer; font-weight: bold; font-family: 'Tajawal'; }
+        .back-btn { background: #f1f5f9; border: none; padding: 8px 15px; border-radius: 10px; cursor: pointer; font-weight: bold; }
         .close-btn { border: none; background: #fee2e2; color: #dc2626; border-radius: 50%; width: 35px; height: 35px; cursor: pointer; }
         .partner-box { background: #eff6ff; padding: 18px; border-radius: 15px; margin: 15px 0; border-right: 5px solid var(--accent); }
         .child-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
-        .child-item { background: #f8fafc; padding: 12px; border-radius: 10px; border: 1px solid #e2e8f0; cursor: pointer; text-align: center; font-weight: bold; color: var(--accent); }
+        /* تصميم الابن الذي له فروع */
+        .child-item.has-branch { background: #f0fdf4; border: 1px solid var(--link-color); color: var(--link-color); cursor: pointer; font-weight: bold; padding: 12px; border-radius: 10px; text-align: center; }
+        /* تصميم الابن الذي ليس له فروع */
+        .child-item.no-branch { background: #f8fafc; border: 1px solid #e2e8f0; color: var(--primary); cursor: default; padding: 12px; border-radius: 10px; text-align: center; }
         .view-family-btn { background: var(--accent); color: white; border: none; padding: 12px; border-radius: 10px; width: 100%; cursor: pointer; font-family: 'Tajawal'; font-weight: bold; margin-top: 10px; }
     </style>
 </head>
@@ -35,7 +38,7 @@
     </div>
 
     <div class="search-container">
-        <input type="text" id="familySearch" placeholder="ابحث بالإسم (يظهر النسب كاملاً)..." oninput="handleSearch()">
+        <input type="text" id="familySearch" placeholder="ابحث بالإسم..." oninput="handleSearch()">
         <div id="searchResults" class="search-results"></div>
     </div>
 
@@ -71,23 +74,21 @@
             'abdelmalek': { name: 'عبد الملك محمد علي فضيل', partner: 'اعتدال عمر سليمان', children: ['محمد'] },
             'hweida': { name: 'هويدا عمر سليمان', partner: 'محمد خير عبدالرحمن', children: ['عامر', 'أحمد', 'أواب', 'أنس', 'زينب', 'مصطفى'] },
             
-            // تعريف الأمهات للربط بالأبناء تحت الأب
+            // الأمهات (روابط فقط)
             'zeinab': { name: 'زينب عثمان حنان', partner: 'عمر سليمان الجاك', isMother: true, partnerId: 'omar' },
             'ishraga': { name: 'إشراقة عمر سليمان', partner: 'هاشم صالح علي', isMother: true, partnerId: 'hashem' },
-            'etidal': { name: 'اعتدال عمر سليمان', partner: 'عبد الملك محمد علي فضيل', isMother: true, partnerId: 'abdelmalek' },
+            'etidal': { name: 'اعتدال عمر سليمان', partner: 'عبد الملك فضيل', isMother: true, partnerId: 'abdelmalek' },
             'fatima': { name: 'فاطمة سليمان الجاك', partner: 'محمد علي فضيل', isMother: true, partnerId: 'abdelmalek' },
-            'nefisa': { name: 'نفيسة سليمان الجاك', partner: 'صالح علي أبوالحسن', isMother: true, partnerId: 'hashem' }
+            'nefisa': { name: 'نفيسة سليمان الجاك', partner: 'صالح علي أبوالحسن', isMother: true, partnerId: 'hashem' },
+            'rawda': { name: 'الروضة سليمان الجاك', children: [] },
+            'ghani': { name: 'عبد الغني سليمان الجاك', children: [] }
         };
 
-        // دالة تحويل الأسماء لـ IDs لضمان عمل الروابط
-        function nameToId(name) {
-            const map = {
-                'عمر': 'omar', 'عبد الله': 'abdullah', 'عباس': 'abbas', 'إشراقة': 'ishraga', 
-                'هويدا': 'hweida', 'زينب': 'zeinab', 'اعتدال': 'etidal', 'فاطمة': 'fatima', 
-                'نفيسة': 'nefisa', 'الروضة': 'rawda', 'عبد الغني': 'ghani', 'هاشم': 'hashem'
-            };
-            return map[name.trim()] || name.trim().replace(/\s+/g, '_');
-        }
+        const idMap = {
+            'عمر': 'omar', 'عبد الله': 'abdullah', 'عباس': 'abbas', 'إشراقة': 'ishraga', 
+            'هويدا': 'hweida', 'زينب': 'zeinab', 'اعتدال': 'etidal', 'فاطمة': 'fatima', 
+            'نفيسة': 'nefisa', 'الروضة': 'rawda', 'عبد الغني': 'ghani', 'هاشم': 'hashem'
+        };
 
         function norm(t) { return t.replace(/[أإآ]/g, "ا").replace(/ة/g, "ه").replace(/[ىي]/g, "ي").trim(); }
 
@@ -98,62 +99,57 @@
             if (q.length < 2) { resBox.style.display = 'none'; return; }
             let matches = [];
             for (let id in familyData) {
-                const p = familyData[id];
-                if (norm(p.name).includes(q)) matches.push({ n: p.name, id: id });
-                if (p.children) {
-                    p.children.forEach(c => {
-                        const fullName = `${c} ${p.name}`;
-                        if (norm(fullName).includes(q)) matches.push({ n: fullName, id: nameToId(c) });
+                if (norm(familyData[id].name).includes(q)) matches.push({ n: familyData[id].name, id: id });
+                if (familyData[id].children) {
+                    familyData[id].children.forEach(c => {
+                        const fullName = `${c} ${familyData[id].name}`;
+                        if (norm(fullName).includes(q)) matches.push({ n: fullName, id: idMap[c] || 'no_link' });
                     });
                 }
             }
             if (matches.length > 0) {
-                const unique = Array.from(new Set(matches.map(a => a.n))).map(n => matches.find(a => a.n === n));
-                resBox.innerHTML = unique.map(m => `<div class="search-item" onclick="selectSearch('${m.id}', '${m.n}')">${m.n}</div>`).join('');
+                const unique = Array.from(new Set(matches.filter(m => m.id !== 'no_link').map(a => a.n))).map(n => matches.find(a => a.n === n));
+                resBox.innerHTML = unique.map(m => `<div class="search-item" onclick="selectSearch('${m.id}')">${m.n}</div>`).join('');
                 resBox.style.display = 'block';
             } else { resBox.style.display = 'none'; }
         }
 
-        function selectSearch(id, name) { 
+        function selectSearch(id) { 
             document.getElementById('searchResults').style.display = 'none'; 
             document.getElementById('familySearch').value = ""; 
-            openNode(id, true, name); 
+            openNode(id); 
         }
 
-        function openNode(id, save = true, fallbackName = '') {
-            const p = familyData[id] || { name: fallbackName || id.replace(/_/g, ' '), children: [], partner: 'غير مسجل' };
-            if (save) navigationHistory.push({id, name: p.name});
+        function openNode(id, save = true) {
+            const p = familyData[id]; if (!p) return;
+            if (save) navigationHistory.push(id);
             updateBackButton();
             
             let h = `<h2 style="color:var(--accent); margin-top:0;">${p.name}</h2>`;
             h += `<div class="partner-box"><strong>الزوج / الزوجة:</strong> ${p.partner || 'غير مسجل'}</div>`;
             
             if (p.isMother && p.partnerId) {
-                h += `<p style="color:#64748b;">الأبناء مسجلون تحت اسم الأب حسب العرف الاجتماعي:</p>`;
-                h += `<button class="view-family-btn" onclick="openNode('${p.partnerId}', true, '${p.partner}')">عرض أبناء ${p.partner} 📁</button>`;
+                h += `<p style="color:var(--text-muted);">الأبناء مسجلون تحت اسم الأب:</p>`;
+                h += `<button class="view-family-btn" onclick="openNode('${p.partnerId}')">عرض أبناء ${p.partner} 📁</button>`;
             } else if (p.children && p.children.length > 0) {
                 h += `<h3>الأبناء:</h3><div class="child-list">`;
                 p.children.forEach(c => {
-                    const cid = nameToId(c);
-                    h += `<div class="child-item" onclick="openNode('${cid}', true, '${c} ${p.name}')">${c} ←</div>`;
+                    const cid = idMap[c];
+                    // فحص إذا كان للابن فروع (أبناء أو صفحة تعريفية)
+                    const hasBranch = cid && (familyData[cid]?.children?.length > 0 || familyData[cid]?.isMother);
+                    if (hasBranch) {
+                        h += `<div class="child-item has-branch" onclick="openNode('${cid}')">${c} ←</div>`;
+                    } else {
+                        h += `<div class="child-item no-branch">${c}</div>`;
+                    }
                 });
                 h += `</div>`;
-            } else {
-                h += `<p style="text-align:center; color:#64748b; margin-top:30px; border:1px dashed #cbd5e1; padding:20px; border-radius:15px;">لا توجد بيانات أبناء مسجلة حالياً لـ ${p.name}.</p>`;
             }
-            
             document.getElementById('modalBody').innerHTML = h;
             document.getElementById('familyModal').style.display = 'flex';
         }
 
-        function goBack() { 
-            if (navigationHistory.length > 1) { 
-                navigationHistory.pop(); 
-                const prev = navigationHistory[navigationHistory.length - 1];
-                openNode(prev.id, false, prev.name); 
-            } 
-        }
-
+        function goBack() { if (navigationHistory.length > 1) { navigationHistory.pop(); openNode(navigationHistory[navigationHistory.length - 1], false); } }
         function updateBackButton() { document.getElementById('backBtn').style.visibility = navigationHistory.length > 1 ? 'visible' : 'hidden'; }
         function closeModal() { document.getElementById('familyModal').style.display = 'none'; navigationHistory = []; }
         document.addEventListener('click', (e) => { if (!e.target.closest('.search-container')) document.getElementById('searchResults').style.display = 'none'; });
