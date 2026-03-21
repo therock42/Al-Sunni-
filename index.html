@@ -76,76 +76,71 @@
     <script>
         let navHistory = [];
         const familyData = {
-            'soliman': { name: 'سليمان (الجاك)', children: [{ name: 'عمر', id: 'omar_s' }, { name: 'نفيسة', id: 'nefisa_s' }, { name: 'النعمة' }, { name: 'مدينة', id: 'madina_s' }, { name: 'فاطمة' }, { name: 'أم الحسين' }, { name: 'الروضة' }, { name: 'عبد القيوم' }, { name: 'عبد العظيم' }] },
-            'othman': { name: 'عثمان (حنان)', children: [{ name: 'محمد', id: 'mohammed_o' }, { name: 'عبدالله' }, { name: 'حسن' }, { name: 'زينب', id: 'zeinab_o' }, { name: 'هلالة' }] },
-            'mohammed_s': { name: 'محمد (السني)', children: [{ name: 'عباس' }, { name: 'بخيت' }] },
-            'bat_almona': { name: 'بت المنى (السني)', children: [{ name: 'العوض' }, { name: 'علي' }] },
+            'soliman': { name: 'سليمان (الجاك)', children: [{ name: 'عمر', id: 'omar_s' }, { name: 'النعمة', id: 'alniama_s' }, { name: 'نفيسة', id: 'nefisa_s' }, { name: 'مدينة', id: 'madina_s' }, { name: 'فاطمة' }, { name: 'أم الحسين' }, { name: 'الروضة' }, { name: 'عبد القيوم' }, { name: 'عبد العظيم' }] },
             
+            // فرع النعمة سليمان
+            'alniama_s': { 
+                name: 'النعمة سليمان (الجاك)', 
+                partner: 'عبدالله محمد صالح', 
+                children: [
+                    { name: 'محمد' }, 
+                    { name: 'محي الدين', id: 'mohi_a' }, 
+                    { name: 'أبوالقاسم', id: 'abulgasim_a' }, 
+                    { name: 'فايزة' }, 
+                    { name: 'إقبال', id: 'sofian_o' }, // ربط إقبال كزوجة لسفيان
+                    { name: 'سعاد' }
+                ] 
+            },
+            'abulgasim_a': {
+                name: 'أبوالقاسم عبدالله محمد صالح',
+                partner: 'رميساء عبدالرحمن',
+                children: [{ name: 'عبدالله' }, { name: 'يسرا' }, { name: 'يمنى' }]
+            },
+            'mohi_a': {
+                name: 'محي الدين عبدالله محمد صالح',
+                partner: 'شيماء بخيت',
+                children: [{ name: 'مزن' }, { name: 'آسر' }]
+            },
+
+            // فرع عمر سليمان
             'omar_s': { 
                 name: 'عمر سليمان (الجاك)', 
                 partner: 'زينب عثمان (حنان)', 
                 partnerId: 'zeinab_o', 
                 children: [
-                    { name: 'شمس الدين', id: 'shams_o' }, 
-                    { name: 'حيدر', id: 'haidar_o' }, 
-                    { name: 'سيف الدين', id: 'seif_o' }, 
-                    { name: 'سفيان', id: 'sofian_o' }, 
-                    { name: 'إشراقة', id: 'ishraga_o' }, 
-                    { name: 'نادية', id: 'nadia_o' }, 
-                    { name: 'رفيدة', id: 'rofaida_o' }, 
-                    { name: 'اعتدال' }, 
-                    { name: 'رقية', id: 'rokia_o' }, 
-                    { name: 'أمل', id: 'amal_o' },
-                    { name: 'هويدا' }
+                    { name: 'شمس الدين', id: 'shams_o' }, { name: 'حيدر', id: 'haidar_o' }, 
+                    { name: 'سيف الدين', id: 'seif_o' }, { name: 'سفيان', id: 'sofian_o' }, 
+                    { name: 'إشراقة', id: 'ishraga_o' }, { name: 'نادية', id: 'nadia_o' }, 
+                    { name: 'رفيدة', id: 'rofaida_o' }, { name: 'اعتدال', id: 'etidal_o' }, 
+                    { name: 'رقية', id: 'rokia_o' }, { name: 'أمل', id: 'amal_o' }, { name: 'هويدا', id: 'howaida_o' }
                 ] 
             },
-
-            'haidar_o': { 
-                name: 'حيدر عمر سليمان (الجاك)', 
-                partner: 'نجلاء عبدالله القمر', 
-                children: [{ name: 'سجود' }, { name: 'توسل' }, { name: 'محمد' }, { name: 'عمر' }, { name: 'أحمد' }, { name: 'منة الله' }, { name: 'جود' }] 
-            },
-
-            'seif_o': { 
-                name: 'سيف الدين عمر سليمان (الجاك)', 
-                partner: 'أميرة التهامي', 
-                children: [{ name: 'آلاء' }, { name: 'إسراء' }, { name: 'محمد' }, { name: 'أحمد' }, { name: 'تنزيل' }] 
-            },
-
+            'etidal_o': { name: 'اعتدال عمر سليمان (الجاك)', partner: 'عبدالملك محمد علي فضيل', children: [{ name: 'محمد' }, { name: 'مصطفى' }] },
+            'howaida_o': { name: 'هويدا عمر سليمان (الجاك)', partner: 'محمد خير عبدالرحمن', children: [{ name: 'عامر' }, { name: 'أحمد' }, { name: 'أنس' }, { name: 'أواب' }, { name: 'مصطفى' }, { name: 'زينب' }] },
             'sofian_o': { 
                 name: 'سفيان عمر سليمان (الجاك)', 
                 partner: 'إقبال عبدالله محمد صالح', 
                 children: [{ name: 'أمل' }, { name: 'آية' }, { name: 'تسنيم' }, { name: 'نون' }, { name: 'تسابيح' }] 
             },
-
+            'haidar_o': { name: 'حيدر عمر سليمان (الجاك)', partner: 'نجلاء عبدالله القمر', children: [{ name: 'سجود' }, { name: 'توسل' }, { name: 'محمد' }, { name: 'عمر' }, { name: 'أحمد' }, { name: 'منة الله' }, { name: 'جود' }] },
+            'seif_o': { name: 'سيف الدين عمر سليمان (الجاك)', partner: 'أميرة التهامي', children: [{ name: 'آلاء' }, { name: 'إسراء' }, { name: 'محمد' }, { name: 'أحمد' }, { name: 'تنزيل' }] },
             'nadia_o': { name: 'نادية عمر سليمان (الجاك)', partner: 'إبراهيم الصافي' },
+            'rofaida_o': { name: 'رفيدة عمر سليمان (الجاك)', partner: 'سليمان خضر', children: [{ name: 'شهد' }, { name: 'صفاء' }, { name: 'التاج' }, { name: 'مدثر' }, { name: 'سيف الدين' }, { name: 'وعد' }] },
+            'rokia_o': { name: 'رقية عمر سليمان (الجاك)', partner: 'محمد عبدالله محمد صالح', children: [{ name: 'امتثال' }, { name: 'عبير' }, { name: 'إيمان' }, { name: 'أحمد' }] },
+            'amal_o': { name: 'أمل عمر سليمان (الجاك)', partner: 'يوسف التهامي', children: [{ name: 'حفية' }, { name: 'مآب' }] },
 
-            'rofaida_o': { 
-                name: 'رفيدة عمر سليمان (الجاك)', 
-                partner: 'سليمان خضر', 
-                children: [{ name: 'شهد' }, { name: 'صفاء' }, { name: 'التاج' }, { name: 'مدثر' }, { name: 'سيف الدين' }, { name: 'وعد' }] 
-            },
-
-            'rokia_o': { 
-                name: 'رقية عمر سليمان (الجاك)', 
-                partner: 'محمد عبدالله محمد صالح', 
-                children: [{ name: 'امتثال' }, { name: 'عبير' }, { name: 'إيمان' }, { name: 'أحمد' }] 
-            },
-
-            'amal_o': { 
-                name: 'أمل عمر سليمان (الجاك)', 
-                partner: 'يوسف التهامي', 
-                children: [{ name: 'حفية' }, { name: 'مآب' }] 
-            },
-
-            'ishraga_o': { name: 'إشراقة عمر سليمان (الجاك)', partner: 'هاشم صالح علي', partnerId: 'hashem_s', isLinkOnly: true },
+            // الفروع الأخرى الأساسية
+            'othman': { name: 'عثمان (حنان)', children: [{ name: 'محمد', id: 'mohammed_o' }, { name: 'عبدالله' }, { name: 'حسن' }, { name: 'زينب', id: 'zeinab_o' }, { name: 'هلالة' }] },
+            'mohammed_s': { name: 'محمد (السني)', children: [{ name: 'عباس' }, { name: 'بخيت' }] },
+            'bat_almona': { name: 'بت المنى (السني)', children: [{ name: 'العوض' }, { name: 'علي' }] },
             'zeinab_o': { name: 'زينب عثمان (حنان)', partner: 'عمر سليمان (الجاك)', partnerId: 'omar_s', isLinkOnly: true },
-            'shams_o': { name: 'شمس الدين عمر سليمان (الجاك)', children: [{ name: 'سحر' }, { name: 'محمد' }] },
+            'mohammed_o': { name: 'محمد عثمان (حنان)', partner: 'مدينة سليمان (الجاك)', partnerId: 'madina_s', children: [{ name: 'أميمة' }, { name: 'نهلة' }, { name: 'نجلاء' }] },
+            'madina_s': { name: 'مدينة سليمان (الجاك)', partner: 'محمد عثمان (حنان)', partnerId: 'mohammed_o', isLinkOnly: true },
             'nefisa_s': { name: 'نفيسة سليمان (الجاك)', partner: 'صالح علي أبو الحسن', partnerId: 'saleh_ali', isLinkOnly: true },
             'saleh_ali': { name: 'صالح علي أبو الحسن', partner: 'نفيسة سليمان (الجاك)', children: [{ name: 'هاشم', id: 'hashem_s' }, { name: 'فتاح' }, { name: 'التجاني' }, { name: 'معتصم' }, { name: 'عبدالحفيظ' }, { name: 'سيدأحمد' }, { name: 'حسن' }, { name: 'كمال' }, { name: 'بخيتة' }, { name: 'أميرة' }, { name: 'منيرة' }] },
             'hashem_s': { name: 'هاشم صالح علي', partner: 'إشراقة عمر سليمان (الجاك)', partnerId: 'ishraga_o', children: [{ name: 'نادر' }, { name: 'ريم' }, { name: 'رؤى' }, { name: 'رزان' }] },
-            'mohammed_o': { name: 'محمد عثمان (حنان)', partner: 'مدينة سليمان (الجاك)', partnerId: 'madina_s', children: [{ name: 'أميمة' }, { name: 'نهلة' }, { name: 'نجلاء' }] },
-            'madina_s': { name: 'مدينة سليمان (الجاك)', partner: 'محمد عثمان (حنان)', partnerId: 'mohammed_o', isLinkOnly: true }
+            'ishraga_o': { name: 'إشراقة عمر سليمان (الجاك)', partner: 'هاشم صالح علي', partnerId: 'hashem_s', isLinkOnly: true },
+            'shams_o': { name: 'شمس الدين عمر سليمان (الجاك)', children: [{ name: 'سحر' }, { name: 'محمد' }] }
         };
 
         function normalizeArabic(text) {
@@ -164,7 +159,7 @@
                 if (p.children) {
                     p.children.forEach(c => {
                         if (normalizeArabic(c.name + " " + p.name).includes(q)) {
-                            if (!results.some(r => r.name === c.name)) results.push({ id: c.id || key, name: c.name, info: `ابن/بنت ${p.name}` });
+                            if (!results.some(r => r.name === c.name)) results.push({ id: c.id || key, name: c.name, info: `فرع ${p.name}` });
                         }
                     });
                 }
