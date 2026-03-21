@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>شجرة عائلة السني - النسخة المصححة</title>
+    <title>شجرة عائلة السني - النسخة المعتمدة</title>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -93,7 +93,7 @@
 
     <div class="header-box">
         <h2 style="margin:0; color:var(--accent)">شجرة عائلة السني التفاعلية</h2>
-        <p style="color:#64748b">تم فصل الروضة وعبد الغني إلى فروع مستقلة</p>
+        <p style="color:#64748b">تم الفصل النهائي بين الروضة وعبد الغني</p>
     </div>
 
     <div class="search-container">
@@ -129,12 +129,22 @@
                     { name: 'نفيسة', id: 'nefisa_s' }, 
                     { name: 'النعمة', id: 'elneama_s' },
                     { name: 'أم الحسين' }, 
-                    { name: 'الروضة' }, 
-                    { name: 'عبد الغني' },
+                    { name: 'الروضة', id: 'rawda_s' }, // تم إضافة ID للفصل
+                    { name: 'عبد الغني', id: 'abdelghani_s' }, // تم إضافة ID للفصل
                     { name: 'مدينة' }, 
                     { name: 'عبد القيوم' }, 
                     { name: 'عبد العظيم' }
                 ]
+            },
+            // فرع الروضة المستقل
+            'rawda_s': {
+                name: 'الروضة سليمان الجاك', partner: 'غير مسجل',
+                children: [] 
+            },
+            // فرع عبد الغني المستقل
+            'abdelghani_s': {
+                name: 'عبد الغني سليمان الجاك', partner: 'غير مسجل',
+                children: [] 
             },
             'othman': {
                 name: 'عثمان (حنان)', partner: 'غير مسجل',
