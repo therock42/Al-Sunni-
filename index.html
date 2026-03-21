@@ -1,87 +1,62 @@
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>شجرة عائلة السني - النسخة النضيفة</title>
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
-    <style>
-        :root { --primary: #1e293b; --accent: #2563eb; --link-color: #059669; --bg: #f1f5f9; }
-        body { font-family: 'Tajawal', sans-serif; background-color: var(--bg); margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; }
-        .header-box { text-align: center; background: white; padding: 20px; border-radius: 15px; width: 100%; max-width: 800px; margin-bottom: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
-        .main-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; width: 100%; max-width: 900px; }
-        .branch-card { background: white; padding: 25px; border-radius: 15px; text-align: center; cursor: pointer; border: 1px solid #e2e8f0; transition: 0.3s; }
-        .branch-card:hover { border-color: var(--accent); transform: translateY(-3px); }
-        .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: none; justify-content: center; align-items: center; z-index: 1000; }
-        .modal-content { background: white; padding: 30px; border-radius: 20px; width: 90%; max-width: 600px; max-height: 85vh; overflow-y: auto; position: relative; }
-        .close-btn { position: absolute; top: 15px; left: 15px; border: none; background: #fee2e2; color: #dc2626; border-radius: 50%; width: 35px; height: 35px; cursor: pointer; }
-        .partner-box { background: #eff6ff; padding: 15px; border-radius: 12px; margin: 15px 0; border-right: 5px solid var(--accent); }
-        .child-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; }
-        .child-item { padding: 12px; border-radius: 10px; text-align: center; border: 1px solid #e2e8f0; background: #f8fafc; }
-        .has-link { border-color: var(--link-color); background: #f0fdf4; color: var(--link-color); cursor: pointer; font-weight: bold; }
-    </style>
-</head>
-<body>
-
-    <div class="header-box"><h2>شجرة عائلة السني التفاعلية</h2></div>
-
-    <div class="main-grid">
-        <div class="branch-card" onclick="openNode('soliman')"><h3>فرع سليمان (الجاك)</h3></div>
-        <div class="branch-card" onclick="openNode('othman')"><h3>فرع عثمان (حنان)</h3></div>
-        <div class="branch-card" onclick="openNode('mohammed_s')"><h3>فرع محمد (السني)</h3></div>
-        <div class="branch-card" onclick="openNode('bat_almona')"><h3>فرع بت المنى</h3></div>
-    </div>
-
-    <div class="modal" id="familyModal" onclick="closeModal()">
-        <div class="modal-content" onclick="event.stopPropagation()">
-            <button class="close-btn" onclick="closeModal()">✕</button>
-            <div id="modalBody"></div>
-        </div>
-    </div>
-
-    <script>
-        let navHistory = [];
-
         const familyData = {
-            // الفروع الأساسية
-            'soliman': { name: 'سليمان (الجاك)', partner: 'غير مسجل', children: [{n:'عمر', id:'omar'}, {n:'الروضة'}, {n:'عبد الغني'}, {n:'فاطمة', id:'fatima_s'}, {n:'نفيسة', id:'nefisa_s'}, {n:'النعمة'}, {n:'أم الحسين'}] },
-            'othman': { name: 'عثمان (حنان)', partner: 'غير مسجل', children: [{n:'عبد الله', id:'abdullah_o'}, {n:'زينب', id:'zeinab_o'}, {n:'محمد'}, {n:'فاطمة'}] },
-            'mohammed_s': { name: 'محمد (السني)', partner: 'غير مسجل', children: [{n:'عباس', id:'abbas_m'}, {n:'بخيت'}, {n:'عوض الله'}, {n:'عبد الرحمن'}] },
-            'bat_almona': { name: 'بت المنى', partner: 'غير مسجل', children: [{n:'العوض'}, {n:'على'}, {n:'نفيسة'}, {n:'مسرة'}] },
+            // ... الفروع السابقة تبقى كما هي ...
 
-            // الفروع التفصيلية (الـ ID لازم يطابق اللي فوق)
-            'omar': { name: 'عمر سليمان الجاك', partner: 'زينب عثمان (حنان)', children: [{n:'إشراقة', id:'ishraga'}, {n:'هويدا', id:'hweida'}, {n:'اعتدال', id:'etidal'}, {n:'سيف الدين'}] },
-            'abdullah_o': { name: 'عبد الله عثمان حنان', partner: 'غير مسجل', children: [{n:'المعز'}, {n:'مجدي'}, {n:'محمد'}] },
-            'ishraga': { name: 'إشراقة عمر سليمان', partner: 'هاشم صالح علي', children: [{n:'نادر'}, {n:'ريم'}] },
-            'nefisa_s': { name: 'نفيسة سليمان الجاك', partner: 'صالح علي أبوالحسن', children: [{n:'هاشم صالح علي', id:'hashem'}] },
-            'hashem': { name: 'هاشم صالح علي', partner: 'إشراقة عمر سليمان', children: [{n:'نادر'}, {n:'ريم'}, {n:'رؤى'}] },
-            'zeinab_o': { name: 'زينب عثمان حنان', partner: 'عمر سليمان الجاك', children: [{n:'اضغط للذهاب لفرع الزوج', id:'omar'}] }
+            // تحديث فرع عمر سليمان ليشمل رابط لسفيان
+            'omar_s': {
+                name: 'عمر سليمان (الجاك)',
+                partner: 'زينب عثمان (حنان)',
+                children: [
+                    { name: 'سيف الدين', id: null }, { name: 'شمس الدين', id: null },
+                    { name: 'سفيان', id: 'sufian_o' }, // رابط لفرع سفيان
+                    { name: 'حيدر', id: null }, { name: 'نادية', id: null }, 
+                    { name: 'إشراقة', id: 'ishraga_o' }, { name: 'رفيدة', id: null }, 
+                    { name: 'اعتدال', id: 'etidal_o' }, { name: 'رقية', id: null }, { name: 'أمل', id: null }
+                ]
+            },
+
+            // تفاصيل سفيان عمر سليمان
+            'sufian_o': {
+                name: 'سفيان عمر سليمان (الجاك)',
+                partner: 'إقبال عبدالله محمد',
+                partnerId: 'eqbal_a', // رابط لفرع النعمة
+                kinship: 'ابنة عمته (النعمة سليمان هي أخت عمر سليمان)',
+                children: [
+                    { name: 'أمل', id: null },
+                    { name: 'آية', id: null },
+                    { name: 'نون', id: null },
+                    { name: 'تسابيح', id: null }
+                ]
+            },
+
+            // تحديث فرع النعمة سليمان ليشمل إقبال
+            'elneama_s': {
+                name: 'النعمة سليمان (الجاك)',
+                partner: 'عبدالله محمد',
+                children: [
+                    { name: 'إقبال', id: 'eqbal_a' }
+                ]
+            },
+
+            // تفاصيل إقبال عبدالله (الزوجة)
+            'eqbal_a': {
+                name: 'إقبال عبدالله محمد',
+                partner: 'سفيان عمر سليمان',
+                partnerId: 'sufian_o',
+                kinship: 'ابن خالها (عمر سليمان هو أخو النعمة سليمان)',
+                isLinkOnly: true, // الأبناء يعرضون في صفحة سفيان
+                children: []
+            },
+
+            // تحديث فرع سليمان الرئيسي لربط النعمة
+            'soliman': {
+                name: 'سليمان (الجاك)',
+                children: [
+                    { name: 'فاطمة', id: 'fatima_s' }, { name: 'عمر', id: 'omar_s' },
+                    { name: 'نفيسة', id: 'nefisa_s' }, { name: 'أم الحسين', id: null },
+                    { name: 'الروضة عبد الغني', id: null }, 
+                    { name: 'النعمة', id: 'elneama_s' }, // تفعيل رابط النعمة
+                    { name: 'مدينة', id: null }, { name: 'عبد القيوم', id: null },
+                    { name: 'عبد العظيم', id: null }
+                ]
+            }
         };
-
-        function openNode(id, save = true) {
-            const p = familyData[id]; if (!p) return;
-            if (save) navHistory.push(id);
-
-            let h = '';
-            if (navHistory.length > 1) h += `<p style="color:blue; cursor:pointer;" onclick="goBack()">← رجوع</p>`;
-            h += `<h2>${p.name}</h2>`;
-            h += `<div class="partner-box"><strong>الزوج/الزوجة:</strong> ${p.partner}</div>`;
-            h += `<h3>الأبناء:</h3><div class="child-list">`;
-            
-            p.children.forEach(c => {
-                if (c.id) {
-                    h += `<div class="child-item has-link" onclick="openNode('${c.id}')">${c.n} ←</div>`;
-                } else {
-                    h += `<div class="child-item">${c.n}</div>`;
-                }
-            });
-            h += `</div>`;
-            document.getElementById('modalBody').innerHTML = h;
-            document.getElementById('familyModal').style.display = 'flex';
-        }
-
-        function goBack() { navHistory.pop(); openNode(navHistory[navHistory.length - 1], false); }
-        function closeModal() { document.getElementById('familyModal').style.display = 'none'; navHistory = []; }
-    </script>
-</body>
-</html>
