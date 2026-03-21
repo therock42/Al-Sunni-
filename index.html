@@ -6,59 +6,100 @@
     <title>سجل عائلة السني الرقمي</title>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        :root { --primary: #0f172a; --accent: #1e40af; --bg: #f1f5f9; --card: #ffffff; --link: #047857; --text-muted: #475569; }
+        :root { --primary: #0f172a; --accent: #1e40af; --bg: #f8fafc; --card: #ffffff; --text-muted: #64748b; --gold: #b45309; }
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; transition: all 0.2s ease; }
         body { font-family: 'Tajawal', sans-serif; background-color: var(--bg); margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; color: var(--primary); }
         
         .header { text-align: center; width: 100%; margin-bottom: 30px; }
-        .header h2 { color: var(--primary); font-size: 1.8rem; margin-bottom: 8px; font-weight: 700; letter-spacing: -0.5px; }
-        .header p { color: var(--text-muted); font-size: 0.9rem; border-top: 1px solid #cbd5e1; display: inline-block; padding-top: 10px; }
+        .header h2 { color: var(--primary); font-size: 1.8rem; margin-bottom: 8px; font-weight: 700; }
+        .header p { color: var(--text-muted); font-size: 0.9rem; border-top: 1px solid #e2e8f0; display: inline-block; padding-top: 10px; }
         
         .search-container { width: 100%; max-width: 480px; position: relative; margin-bottom: 35px; }
         #familySearch { width: 100%; padding: 16px 25px; border-radius: 12px; border: 1px solid #cbd5e1; font-size: 16px; outline: none; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); background: white; text-align: center; }
-        #familySearch:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.1); }
         
         .search-results { position: absolute; top: 110%; left: 0; right: 0; background: white; border-radius: 12px; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); z-index: 2000; max-height: 350px; overflow-y: auto; display: none; border: 1px solid #e2e8f0; }
         .search-item { padding: 15px 20px; border-bottom: 1px solid #f1f5f9; cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
-        .search-item:hover { background: #f8fafc; }
 
-        .main-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; width: 100%; max-width: 500px; }
-        .branch-card { background: var(--card); padding: 35px 15px; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); text-align: center; border: 1px solid #e2e8f0; font-weight: 700; cursor: pointer; font-size: 1.1rem; color: var(--primary); }
-        .branch-card:hover { border-color: var(--accent); transform: translateY(-2px); box-shadow: 0 10px 15px -3px rgba(0,0,0,0.05); }
-
-        .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); display: none; justify-content: center; align-items: center; z-index: 1000; backdrop-filter: blur(4px); padding: 20px; }
-        .modal-content { background: white; width: 100%; max-width: 500px; max-height: 80vh; border-radius: 16px; padding: 30px; overflow-y: auto; position: relative; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); }
+        .main-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; width: 100%; max-width: 550px; }
+        .branch-card { 
+            background: var(--card); 
+            padding: 25px 15px; 
+            border-radius: 16px; 
+            box-shadow: 0 4px 10px rgba(0,0,0,0.03); 
+            text-align: center; 
+            border: 1px solid #e2e8f0; 
+            cursor: pointer; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            gap: 8px;
+        }
+        .branch-card:hover { border-color: var(--accent); transform: translateY(-3px); box-shadow: 0 12px 20px rgba(0,0,0,0.06); }
         
-        .modal-nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; border-bottom: 1px solid #f1f5f9; padding-bottom: 15px; }
-        .back-btn { background: none; border: 1px solid #e2e8f0; padding: 8px 15px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 0.85rem; }
+        /* تمييز اللقب */
+        .branch-name { font-weight: 400; font-size: 0.95rem; color: var(--text-muted); }
+        .branch-title { font-weight: 700; font-size: 1.2rem; color: var(--primary); }
+        .nickname-badge { 
+            background: #fef3c7; 
+            color: var(--gold); 
+            font-size: 0.75rem; 
+            padding: 4px 12px; 
+            border-radius: 20px; 
+            font-weight: 700;
+            border: 1px solid #fde68a;
+            margin-top: 5px;
+        }
+
+        .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.6); display: none; justify-content: center; align-items: center; z-index: 1000; backdrop-filter: blur(4px); padding: 15px; }
+        .modal-content { background: white; width: 100%; max-width: 500px; max-height: 85vh; border-radius: 20px; padding: 25px; overflow-y: auto; position: relative; }
+        .modal-nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid #f1f5f9; padding-bottom: 15px; }
+        .back-btn { background: #f1f5f9; border: none; padding: 8px 16px; border-radius: 8px; font-weight: bold; cursor: pointer; }
         .close-btn { background: none; border: none; font-size: 24px; cursor: pointer; color: #94a3b8; }
 
-        .partner-box { background: #f8fafc; padding: 20px; border-radius: 12px; margin-bottom: 25px; border: 1px solid #e2e8f0; }
-        .section-title { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 10px; font-weight: bold; text-transform: uppercase; }
-        .child-list { display: grid; grid-template-columns: 1fr; gap: 10px; }
-        .child-item { background: #ffffff; padding: 15px; border-radius: 10px; border: 1px solid #f1f5f9; display: flex; justify-content: space-between; align-items: center; cursor: pointer; font-size: 0.95rem; }
-        .child-item:hover { border-color: var(--accent); background: #f0f7ff; }
-        .child-item.has-link { border-right: 4px solid var(--accent); font-weight: bold; }
-        .btn-jump { background: var(--primary); color: white; border: none; width: 100%; padding: 12px; border-radius: 8px; margin-top: 15px; font-weight: bold; cursor: pointer; font-size: 0.9rem; }
+        .partner-box { background: #f8fafc; padding: 20px; border-radius: 12px; margin-bottom: 20px; border-right: 4px solid var(--accent); }
+        .section-title { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 12px; font-weight: bold; letter-spacing: 1px; }
+        .child-list { display: grid; grid-template-columns: 1fr; gap: 8px; }
+        .child-item { background: #ffffff; padding: 15px; border-radius: 10px; border: 1px solid #f1f5f9; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
+        .child-item:hover { background: #f0f7ff; border-color: var(--accent); }
+        .btn-jump { background: var(--primary); color: white; border: none; width: 100%; padding: 14px; border-radius: 10px; margin-top: 15px; font-weight: bold; cursor: pointer; }
     </style>
 </head>
 <body>
 
     <div class="header">
         <h2>سجل عائلة السني</h2>
-        <p>الأرشيف الرقمي لتوثيق الأنساب</p>
+        <p>التوثيق الرقمي لفروع العائلة</p>
     </div>
 
     <div class="search-container">
-        <input type="text" id="familySearch" placeholder="البحث في قاعدة البيانات..." oninput="handleSmartSearch(this.value)">
+        <input type="text" id="familySearch" placeholder="ابحث عن اسم..." oninput="handleSmartSearch(this.value)">
         <div id="searchResults" class="search-results"></div>
     </div>
 
     <div class="main-grid">
-        <div class="branch-card" onclick="openModal('soliman')">فرع سليمان الجاك</div>
-        <div class="branch-card" onclick="openModal('othman')">فرع عثمان حنان</div>
-        <div class="branch-card" onclick="openModal('mohammed_s')">فرع محمد السني</div>
-        <div class="branch-card" onclick="openModal('bat_almona')">فرع بت المنى السني</div>
+        <div class="branch-card" onclick="openModal('soliman')">
+            <span class="branch-name">فرع سليمان</span>
+            <span class="branch-title">الجاك</span>
+            <span class="nickname-badge">لقب الفرع</span>
+        </div>
+
+        <div class="branch-card" onclick="openModal('othman')">
+            <span class="branch-name">فرع عثمان</span>
+            <span class="branch-title">حنان</span>
+            <span class="nickname-badge">لقب الفرع</span>
+        </div>
+
+        <div class="branch-card" onclick="openModal('mohammed_s')">
+            <span class="branch-name">فرع محمد</span>
+            <span class="branch-title">السني</span>
+            <span class="nickname-badge">لقب الفرع</span>
+        </div>
+
+        <div class="branch-card" onclick="openModal('bat_almona')">
+            <span class="branch-name">فرع</span>
+            <span class="branch-title">بت المنى</span>
+            <span class="nickname-badge">أصل السني</span>
+        </div>
     </div>
 
     <div class="modal" id="familyModal" onclick="closeModal()">
@@ -74,7 +115,7 @@
     <script>
         let navHistory = [];
         const familyData = {
-            'soliman': { name: 'سليمان الجاك السني', children: [{ name: 'عمر', id: 'omar_s' }, { name: 'نفيسة', id: 'nefisa_s' }, { name: 'النعمة' }, { name: 'مدينة', id: 'madina_s' }, { name: 'فاطمة' }, { name: 'أم الحسين' }, { name: 'الروضة' }, { name: 'عبد القيوم' }, { name: 'عبد العظيم' }] },
+            'soliman': { name: 'سليمان الجاك', children: [{ name: 'عمر', id: 'omar_s' }, { name: 'نفيسة', id: 'nefisa_s' }, { name: 'النعمة' }, { name: 'مدينة', id: 'madina_s' }, { name: 'فاطمة' }, { name: 'أم الحسين' }, { name: 'الروضة' }, { name: 'عبد القيوم' }, { name: 'عبد العظيم' }] },
             'othman': { name: 'عثمان حنان', children: [{ name: 'محمد', id: 'mohammed_o' }, { name: 'عبدالله' }, { name: 'حسن' }, { name: 'زينب', id: 'zeinab_o' }, { name: 'هلالة' }] },
             'mohammed_s': { name: 'محمد السني', children: [{ name: 'عباس' }, { name: 'بخيت' }] },
             'bat_almona': { name: 'بت المنى السني', children: [{ name: 'العوض' }, { name: 'علي' }] },
@@ -98,21 +139,15 @@
         function handleSmartSearch(query) {
             const resDiv = document.getElementById('searchResults');
             const q = normalizeArabic(query);
-            const searchTerms = q.split(/\s+/).filter(t => t.length > 0);
-            if (searchTerms.length === 0 || query.length < 2) { resDiv.style.display = 'none'; return; }
+            if (!q || query.length < 2) { resDiv.style.display = 'none'; return; }
             let results = [];
             Object.keys(familyData).forEach(key => {
                 const p = familyData[key];
-                if (searchTerms.every(term => normalizeArabic(p.name).includes(term))) {
-                    results.push({ id: key, name: p.name, info: 'سجل العائلة' });
-                }
+                if (normalizeArabic(p.name).includes(q)) results.push({ id: key, name: p.name, info: 'سجل العائلة' });
                 if (p.children) {
                     p.children.forEach(c => {
-                        const fullName = normalizeArabic(c.name + " " + p.name);
-                        if (searchTerms.every(term => fullName.includes(term))) {
-                            if (!results.some(r => r.name === c.name)) {
-                                results.push({ id: c.id || key, name: c.name, info: `ابن/بنت ${p.name}` });
-                            }
+                        if (normalizeArabic(c.name + " " + p.name).includes(q)) {
+                            if (!results.some(r => r.name === c.name)) results.push({ id: c.id || key, name: c.name, info: `ابن/بنت ${p.name}` });
                         }
                     });
                 }
@@ -125,28 +160,23 @@
                     </div>
                 `).join('');
                 resDiv.style.display = 'block';
-            } else {
-                resDiv.innerHTML = `<div class="search-item" style="color:var(--text-muted)">لم يتم العثور على نتائج</div>`;
-                resDiv.style.display = 'block';
-            }
+            } else { resDiv.style.display = 'none'; }
         }
 
         function openModal(id, save = true) {
             const p = familyData[id]; if (!p) return;
             if (save) navHistory.push(id);
             updateBack();
-            let h = `<h3 style="margin-top:0; color:var(--primary);">${p.name}</h3>`;
-            if (p.partner) {
-                h += `<div class="section-title">بيانات الشريك</div><div class="partner-box"><strong>الزوج/ة:</strong> ${p.partner}</div>`;
-            }
+            let h = `<h3 style="margin:0 0 15px 0; color:var(--primary); font-size:1.4rem;">${p.name}</h3>`;
+            if (p.partner) h += `<div class="section-title">بيانات الشريك</div><div class="partner-box"><strong>الزوج/ة:</strong> ${p.partner}</div>`;
             if (p.isLinkOnly) {
-                h += `<p style="font-size:0.9rem; color:var(--text-muted);">البيانات التفصيلية والأبناء موثقون في سجل الطرف الآخر.</p>`;
+                h += `<p style="font-size:0.9rem; color:var(--text-muted);">البيانات التفصيلية موثقون في سجل الطرف الآخر.</p>`;
                 h += `<button class="btn-jump" onclick="openModal('${p.partnerId}')">عرض البيانات الكاملة</button>`;
             } else if (p.children) {
                 h += `<div class="section-title">الأبناء</div><div class="child-list">`;
                 p.children.forEach(c => {
-                    h += `<div class="child-item ${c.id ? 'has-link' : ''}" onclick="${c.id ? `openModal('${c.id}')` : ''}">
-                        <span>${c.name}</span> ${c.id ? '<span>←</span>' : ''}
+                    h += `<div class="child-item" onclick="${c.id ? `openModal('${c.id}')` : ''}">
+                        <span>${c.name}</span> ${c.id ? '<span style="color:var(--accent)">←</span>' : ''}
                     </div>`;
                 });
                 h += `</div>`;
@@ -159,7 +189,7 @@
         function goBack() { if (navHistory.length > 1) { navHistory.pop(); openModal(navHistory[navHistory.length - 1], false); } }
         function updateBack() { document.getElementById('backBtn').style.visibility = navHistory.length > 1 ? 'visible' : 'hidden'; }
         function closeModal() { document.getElementById('familyModal').style.display = 'none'; navHistory = []; updateBack(); }
-        window.onclick = (e) => { if (!e.target.closest('.search-container')) document.getElementById('searchResults').style.display = 'none'; }
+        window.onclick = (e) => { if (e.target.id === 'familyModal') closeModal(); }
     </script>
 </body>
 </html>
