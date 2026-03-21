@@ -12,7 +12,7 @@
         
         .header { text-align: center; width: 100%; margin-bottom: 30px; }
         .header h2 { color: var(--primary); font-size: 1.8rem; margin-bottom: 5px; font-weight: 700; }
-        .full-lineage { font-size: 0.8rem; color: var(--gold); background: #fef3c7; padding: 5px 15px; border-radius: 20px; display: inline-block; margin-top: 5px; border: 1px solid #fde68a; }
+        .full-lineage { font-size: 0.85rem; color: var(--gold); background: #fef3c7; padding: 6px 18px; border-radius: 20px; display: inline-block; margin-top: 5px; border: 1px solid #fde68a; line-height: 1.4; }
         
         .search-container { width: 100%; max-width: 480px; position: relative; margin: 30px 0; }
         #familySearch { width: 100%; padding: 16px 25px; border-radius: 12px; border: 1px solid #cbd5e1; font-size: 16px; outline: none; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); background: white; text-align: center; }
@@ -53,7 +53,7 @@
 
     <div class="header">
         <h2>سجل عائلة السني</h2>
-        <div class="full-lineage">(أحمد السني محمد بشير الحاج حسن علي محمد أبو حليمة)</div>
+        <div class="full-lineage">أحمد (السني) محمد بشير الحاج حسن علي محمد أبو حليمة</div>
     </div>
 
     <div class="search-container">
@@ -92,32 +92,15 @@
 
     <script>
         let navHistory = [];
-        
-        // قاعدة البيانات مع تطبيق التنبيهات الاحترافية للألقاب
         const familyData = {
             'soliman': { name: 'سليمان (الجاك)', children: [{ name: 'عمر', id: 'omar_s' }, { name: 'نفيسة', id: 'nefisa_s' }, { name: 'النعمة' }, { name: 'مدينة', id: 'madina_s' }, { name: 'فاطمة' }, { name: 'أم الحسين' }, { name: 'الروضة' }, { name: 'عبد القيوم' }, { name: 'عبد العظيم' }] },
             'othman': { name: 'عثمان (حنان)', children: [{ name: 'محمد', id: 'mohammed_o' }, { name: 'عبدالله' }, { name: 'حسن' }, { name: 'زينب', id: 'zeinab_o' }, { name: 'هلالة' }] },
             'mohammed_s': { name: 'محمد (السني)', children: [{ name: 'عباس' }, { name: 'بخيت' }] },
             'bat_almona': { name: 'بت المنى (السني)', children: [{ name: 'العوض' }, { name: 'علي' }] },
-            
-            'omar_s': { 
-                name: 'عمر سليمان (الجاك)', 
-                partner: 'زينب عثمان (حنان)', 
-                partnerId: 'zeinab_o', 
-                children: [{ name: 'شمس الدين', id: 'shams_o' }, { name: 'حيدر', id: 'haidar_o' }, { name: 'إشراقة', id: 'ishraga_o' }, { name: 'سيف الدين' }, { name: 'سفيان' }, { name: 'نادية' }, { name: 'رفيدة' }, { name: 'اعتدال' }, { name: 'هويدا' }, { name: 'رقية' }, { name: 'أمل' }] 
-            },
+            'omar_s': { name: 'عمر سليمان (الجاك)', partner: 'زينب عثمان (حنان)', partnerId: 'zeinab_o', children: [{ name: 'شمس الدين', id: 'shams_o' }, { name: 'حيدر', id: 'haidar_o' }, { name: 'إشراقة', id: 'ishraga_o' }, { name: 'سيف الدين' }, { name: 'سفيان' }, { name: 'نادية' }, { name: 'رفيدة' }, { name: 'اعتدال' }, { name: 'هويدا' }, { name: 'رقية' }, { name: 'أمل' }] },
             'nefisa_s': { name: 'نفيسة سليمان (الجاك)', partner: 'صالح علي أبو الحسن', partnerId: 'saleh_ali', isLinkOnly: true },
-            'saleh_ali': { 
-                name: 'صالح علي أبو الحسن', 
-                partner: 'نفيسة سليمان (الجاك)', 
-                children: [{ name: 'هاشم', id: 'hashem_s' }, { name: 'فتاح' }, { name: 'التجاني' }, { name: 'معتصم' }, { name: 'عبدالحفيظ' }, { name: 'سيدأحمد' }, { name: 'حسن' }, { name: 'كمال' }, { name: 'بخيتة' }, { name: 'أميرة' }, { name: 'منيرة' }] 
-            },
-            'hashem_s': { 
-                name: 'هاشم صالح علي', 
-                partner: 'إشراقة عمر سليمان (الجاك)', 
-                partnerId: 'ishraga_o', 
-                children: [{ name: 'نادر' }, { name: 'ريم' }, { name: 'رؤى' }, { name: 'رزان' }] 
-            },
+            'saleh_ali': { name: 'صالح علي أبو الحسن', partner: 'نفيسة سليمان (الجاك)', children: [{ name: 'هاشم', id: 'hashem_s' }, { name: 'فتاح' }, { name: 'التجاني' }, { name: 'معتصم' }, { name: 'عبدالحفيظ' }, { name: 'سيدأحمد' }, { name: 'حسن' }, { name: 'كمال' }, { name: 'بخيتة' }, { name: 'أميرة' }, { name: 'منيرة' }] },
+            'hashem_s': { name: 'هاشم صالح علي', partner: 'إشراقة عمر سليمان (الجاك)', partnerId: 'ishraga_o', children: [{ name: 'نادر' }, { name: 'ريم' }, { name: 'رؤى' }, { name: 'رزان' }] },
             'ishraga_o': { name: 'إشراقة عمر سليمان (الجاك)', partner: 'هاشم صالح علي', partnerId: 'hashem_s', isLinkOnly: true },
             'zeinab_o': { name: 'زينب عثمان (حنان)', partner: 'عمر سليمان (الجاك)', partnerId: 'omar_s', isLinkOnly: true },
             'mohammed_o': { name: 'محمد عثمان (حنان)', partner: 'مدينة سليمان (الجاك)', partnerId: 'madina_s', children: [{ name: 'أميمة' }, { name: 'نهلة' }, { name: 'نجلاء' }] },
