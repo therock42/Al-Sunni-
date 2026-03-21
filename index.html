@@ -93,11 +93,11 @@
 
     <div class="header-box">
         <h2 style="margin:0; color:var(--accent)">شجرة عائلة السني التفاعلية</h2>
-        <p style="color:#64748b">تم تصحيح أبناء عبد الله (حنان) وعباس (السني)</p>
+        <p style="color:#64748b">تم فصل الروضة وعبد الغني إلى فروع مستقلة</p>
     </div>
 
     <div class="search-container">
-        <input type="text" id="familySearch" placeholder="ابحث بالإسم (مثلاً: المعز، نازك، منذر...)" onkeyup="handleSearch()">
+        <input type="text" id="familySearch" placeholder="ابحث بالإسم..." onkeyup="handleSearch()">
     </div>
 
     <div class="main-grid">
@@ -124,10 +124,16 @@
             'soliman': {
                 name: 'سليمان (الجاك)', partner: 'غير مسجل',
                 children: [
-                    { name: 'فاطمة', id: 'fatima_s' }, { name: 'عمر', id: 'omar_s' },
-                    { name: 'نفيسة', id: 'nefisa_s' }, { name: 'النعمة', id: 'elneama_s' },
-                    { name: 'أم الحسين' }, { name: 'الروضة عبد الغني' },
-                    { name: 'مدينة' }, { name: 'عبد القيوم' }, { name: 'عبد العظيم' }
+                    { name: 'فاطمة', id: 'fatima_s' }, 
+                    { name: 'عمر', id: 'omar_s' },
+                    { name: 'نفيسة', id: 'nefisa_s' }, 
+                    { name: 'النعمة', id: 'elneama_s' },
+                    { name: 'أم الحسين' }, 
+                    { name: 'الروضة' }, 
+                    { name: 'عبد الغني' },
+                    { name: 'مدينة' }, 
+                    { name: 'عبد القيوم' }, 
+                    { name: 'عبد العظيم' }
                 ]
             },
             'othman': {
@@ -139,7 +145,6 @@
                     { name: 'عبد الله', id: 'abdullah_o' }
                 ]
             },
-            // تصحيح فرع عبد الله عثمان حنان
             'abdullah_o': {
                 name: 'عبد الله عثمان (حنان)', partner: 'غير مسجل',
                 children: [
@@ -156,7 +161,6 @@
                     { name: 'عبد الرحمن' }
                 ]
             },
-            // تصحيح فرع عباس محمد السني
             'abbas_m': {
                 name: 'عباس محمد (السني)', partner: 'غير مسجل',
                 children: [
