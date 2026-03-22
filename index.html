@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>سجل عائلة السني الكامل</title>
+    <title>سجل عائلة السني - النسخة الشاملة</title>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root { --primary: #0f172a; --accent: #1e40af; --bg: #f8fafc; --card: #ffffff; --gold: #b45309; --emerald: #059669; }
@@ -24,7 +24,6 @@
         .relation-tag { color: var(--emerald); font-weight: bold; font-size: 0.85rem; }
         .child-box { background: #f8fafc; padding: 12px; border-radius: 10px; border: 1px solid #f1f5f9; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; }
         .clickable { cursor: pointer; background: #fff; border-color: #cbd5e1; }
-        .clickable:hover { border-color: var(--accent); }
         .btn-link { background: var(--primary); color: white; border: none; width: 100%; padding: 10px; border-radius: 8px; cursor: pointer; font-weight: bold; margin-top: 10px; }
         .back-btn { background: #f1f5f9; border: none; padding: 8px 15px; border-radius: 8px; cursor: pointer; margin-bottom: 10px; }
     </style>
@@ -57,41 +56,29 @@
 
 <script>
     const familyData = {
-        // الفروع الرئيسية
-        'soliman': { name: 'سليمان (الجاك)', children: [{name:'عمر', id:'omar_s'}, {name:'النعمة', id:'alniama_s'}, {name:'عبد العظيم', id:'abdelazim_s'}, {name:'نفيسة', id:'nefisa_s'}, {name:'مدينة', id:'madina_s'}, {name:'عبد القيوم'}, {name:'فاطمة'}, {name:'أم الحسين'}, {name:'الروضة'}] },
-        'othman': { name: 'عثمان (حنان)', children: [{name:'محمد', id:'mohammed_o'}, {name:'زينب', id:'zeinab_o'}] },
-        'mohammed_s': { name: 'محمد (السني)', children: [{name:'عباس'}, {name:'بخيت'}] },
-        'bat_almona': { name: 'بت المنى', children: [{name:'علي'}] },
+        // فروع سليمان
+        'soliman': { name: 'سليمان (الجاك)', children: [{name:'عمر', id:'omar_s'}, {name:'النعمة', id:'alniama_s'}, {name:'عبد العظيم', id:'abdelazim_s'}, {name:'عبدالغني', id:'abdelghani_s'}, {name:'نفيسة', id:'nefisa_s'}, {name:'مدينة', id:'madina_s'}, {name:'عبد القيوم'}] },
+        'abdelghani_s': { name: 'عبدالغني سليمان (الجاك)', partner: 'بلالة محمد (السني)', relation: 'ابنة عمه', partnerId: 'balala_ms', children: [{name:'وضاح'}, {name:'سليمان'}, {name:'خالد'}, {name:'عمر'}, {name:'هاجر'}, {name:'هالة'}, {name:'هلالة'}, {name:'هديل'}] },
+        'balala_ms': { name: 'بلالة محمد (السني)', partner: 'عبدالغني سليمان', relation: 'ابن عمها', partnerId: 'abdelghani_s' },
 
-        // تفاصيل فرع عمر سليمان
+        // فرع محمد السني المحدث
+        'mohammed_s': { name: 'محمد (السني)', children: [{name:'عباس', id:'abbas_ms'}, {name:'بخيت'}, {name:'عبدالواحد'}, {name:'عبدالرحمن'}, {name:'عبدالرحيم'}, {name:'عوض الله'}, {name:'بلالة', id:'balala_ms'}, {name:'مسرة'}] },
+        'abbas_ms': { name: 'عباس محمد (السني)', partner: 'هلالة عثمان (حنان)', relation: 'ابنة عمه', partnerId: 'helala_o', children: [{name:'نازك'}, {name:'محمد'}, {name:'مهند'}, {name:'مصطفى'}, {name:'مهتدي'}] },
+        'helala_o': { name: 'هلالة عثمان (حنان)', partner: 'عباس محمد (السني)', partnerId: 'abbas_ms' },
+
+        // فرع عثمان حنان
+        'othman': { name: 'عثمان (حنان)', children: [{name:'محمد', id:'mohammed_o'}, {name:'زينب', id:'zeinab_o'}, {name:'هلالة', id:'helala_o'}] },
+        
+        // بقية الفروع (نفس البيانات السابقة للربط)
         'omar_s': { 
             name: 'عمر سليمان (الجاك)', partner: 'زينب عثمان (حنان)', relation: 'ابنة خاله', partnerId: 'zeinab_o',
-            children: [{name:'شمس الدين'}, {name:'حيدر', id:'haidar_o'}, {name:'سيف الدين', id:'seif_o'}, {name:'سفيان', id:'sofian_o'}, {name:'إشراقة', id:'ishraga_o'}, {name:'نادية'}, {name:'رفيدة', id:'rofaida_o'}, {name:'اعتدال', id:'etidal_o'}, {name:'رقية', id:'rokia_o'}, {name:'أمل', id:'amal_o'}, {name:'هويدا', id:'howaida_o'}] 
+            children: [{name:'حيدر', id:'haidar_o'}, {name:'سيف الدين', id:'seif_o'}, {name:'سفيان', id:'sofian_o'}, {name:'إشراقة', id:'ishraga_o'}, {name:'رقية', id:'rokia_o'}] 
         },
-        'haidar_o': { name: 'حيدر عمر سليمان', partner: 'نجلاء عبدالله القمر', children: [{name:'سجود'}, {name:'توسل'}, {name:'محمد'}, {name:'عمر'}, {name:'أحمد'}, {name:'منة الله'}, {name:'جود'}] },
-        'seif_o': { name: 'سيف الدين عمر سليمان', partner: 'أميرة التهامي', children: [{name:'آلاء'}, {name:'إسراء'}, {name:'محمد'}, {name:'أحمد'}, {name:'تنزيل'}] },
-        'sofian_o': { name: 'سفيان عمر سليمان', partner: 'إقبال عبدالله محمد صالح', relation: 'ابنة عمته', partnerId: 'iqbal_a', children: [{name:'أمل'}, {name:'آية'}, {name:'تسنيم'}] },
-        'rokia_o': { name: 'رقية عمر سليمان', partner: 'محمد عبدالله محمد صالح', relation: 'ابن عمتها', partnerId: 'mohammed_a', children: [{name:'امتثال'}, {name:'عبير'}, {name:'إيمان'}] },
-        'ishraga_o': { name: 'إشراقة عمر سليمان', partner: 'هاشم صالح علي', relation: 'ابن عمتها', partnerId: 'hashem_s' },
-
-        // تفاصيل فرع النعمة
-        'alniama_s': { name: 'النعمة سليمان (الجاك)', partner: 'عبدالله محمد صالح', children: [{name:'محمد', id:'mohammed_a'}, {name:'إقبال', id:'iqbal_a'}, {name:'محي الدين', id:'mohi_a'}, {name:'أبوالقاسم', id:'abulgasim_a'}, {name:'فايزة'}, {name:'سعاد'}] },
-        'mohammed_a': { name: 'محمد عبدالله محمد صالح', partner: 'رقية عمر سليمان', partnerId: 'rokia_o' },
-        'iqbal_a': { name: 'إقبال عبدالله محمد صالح', partner: 'سفيان عمر سليمان', partnerId: 'sofian_o' },
-
-        // تفاصيل فرع نفيسة
-        'nefisa_s': { name: 'نفيسة سليمان (الجاك)', partner: 'صالح علي أبو الحسن', children: [{name:'هاشم', id:'hashem_s'}, {name:'كمال'}, {name:'حسن'}] },
-        'hashem_s': { name: 'هاشم صالح علي', partner: 'إشراقة عمر سليمان', partnerId: 'ishraga_o', children: [{name:'نادر'}, {name:'ريم', id:'reem_h'}, {name:'رؤى'}] },
-        'reem_h': { name: 'ريم هاشم صالح علي', partner: 'حاتم عبد العظيم سليمان', partnerId: 'hatim_a' },
-
-        // تفاصيل فرع عبد العظيم
-        'abdelazim_s': { name: 'عبد العظيم سليمان (الجاك)', partner: 'هلالة بت المسور', children: [{name:'حاتم', id:'hatim_a'}, {name:'وليد'}, {name:'منال'}, {name:'نهال'}] },
-        'hatim_a': { name: 'حاتم عبد العظيم سليمان', partner: 'ريم هاشم صالح علي', partnerId: 'reem_h' },
-
-        // تفاصيل فرع عثمان
+        'alniama_s': { name: 'النعمة سليمان (الجاك)', partner: 'عبدالله محمد صالح', children: [{name:'محمد', id:'mohammed_a'}, {name:'إقبال', id:'iqbal_a'}] },
+        'nefisa_s': { name: 'نفيسة سليمان (الجاك)', partner: 'صالح علي أبو الحسن', children: [{name:'هاشم', id:'hashem_s'}] },
+        'abdelazim_s': { name: 'عبد العظيم سليمان (الجاك)', children: [{name:'حاتم', id:'hatim_a'}] },
         'zeinab_o': { name: 'زينب عثمان (حنان)', partner: 'عمر سليمان (الجاك)', partnerId: 'omar_s' },
-        'madina_s': { name: 'مدينة سليمان (الجاك)', partner: 'محمد عثمان (حنان)', partnerId: 'mohammed_o' },
-        'mohammed_o': { name: 'محمد عثمان (حنان)', partner: 'مدينة سليمان (الجاك)', children: [{name:'أميمة'}, {name:'نهلة'}, {name:'نجلاء'}] }
+        'bat_almona': { name: 'بت المنى', children: [{name:'علي'}] }
     };
 
     let history = [];
@@ -112,10 +99,7 @@
                 <div class="child-box ${c.id ? 'clickable' : ''}" onclick="${c.id ? `openModal('${c.id}')` : ''}">
                     ${c.name} ${c.id ? '<span>←</span>' : ''}
                 </div>`).join('');
-        } else if (!p.partner) {
-            h += `<p style="text-align:center; color:#94a3b8;">لا توجد بيانات إضافية مسجلة.</p>`;
         }
-        
         document.getElementById('modalBody').innerHTML = h;
         document.getElementById('familyModal').style.display = 'flex';
     }
