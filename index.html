@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>سجل عائلة السني - النسخة الشاملة</title>
+    <title>سجل عائلة السني - النسخة الذكية</title>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root { --primary: #0f172a; --accent: #1e40af; --bg: #f8fafc; --card: #ffffff; --gold: #b45309; --emerald: #059669; }
@@ -16,12 +16,10 @@
         .search-results { position: absolute; top: 110%; left: 0; right: 0; background: white; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); z-index: 2000; max-height: 300px; overflow-y: auto; display: none; border: 1px solid #e2e8f0; }
         .search-item { padding: 12px; border-bottom: 1px solid #f1f5f9; cursor: pointer; display: flex; justify-content: space-between; }
         .main-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; width: 100%; max-width: 550px; }
-        .branch-card { background: var(--card); padding: 20px; border-radius: 16px; text-align: center; border: 1px solid #e2e8f0; cursor: pointer; font-weight: bold; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .branch-card { background: var(--card); padding: 20px; border-radius: 16px; text-align: center; border: 1px solid #e2e8f0; cursor: pointer; font-weight: bold; }
         .modal { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.7); display: none; justify-content: center; align-items: center; z-index: 3000; backdrop-filter: blur(4px); padding: 10px; }
         .modal-content { background: white; width: 100%; max-width: 480px; max-height: 90vh; border-radius: 24px; padding: 25px; overflow-y: auto; }
-        .person-name { font-size: 1.4rem; font-weight: 700; color: var(--accent); margin-bottom: 15px; text-align: center; border-bottom: 2px solid #f1f5f9; padding-bottom: 10px; }
         .info-section { background: #f0f7ff; padding: 15px; border-radius: 12px; margin-bottom: 15px; border-right: 4px solid var(--accent); }
-        .relation-tag { color: var(--emerald); font-weight: bold; font-size: 0.85rem; }
         .child-box { background: #f8fafc; padding: 12px; border-radius: 10px; border: 1px solid #f1f5f9; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; }
         .clickable { cursor: pointer; background: #fff; border-color: #cbd5e1; }
         .btn-link { background: var(--primary); color: white; border: none; width: 100%; padding: 10px; border-radius: 8px; cursor: pointer; font-weight: bold; margin-top: 10px; }
@@ -36,16 +34,11 @@
     </div>
 
     <div class="search-container">
-        <input type="text" id="familySearch" placeholder="ابحث عن اسم..." oninput="handleSearch(this.value)">
+        <input type="text" id="familySearch" placeholder="ابحث عن أي اسم..." oninput="handleSearch(this.value)">
         <div id="searchResults" class="search-results"></div>
     </div>
 
-    <div class="main-grid">
-        <div class="branch-card" onclick="openModal('soliman')">سليمان (الجاك)</div>
-        <div class="branch-card" onclick="openModal('othman')">عثمان (حنان)</div>
-        <div class="branch-card" onclick="openModal('mohammed_s')">محمد (السني)</div>
-        <div class="branch-card" onclick="openModal('bat_almona')">بت المنى</div>
-    </div>
+    <div class="main-grid" id="mainGrid"></div>
 
     <div class="modal" id="familyModal" onclick="closeModal()">
         <div class="modal-content" onclick="event.stopPropagation()">
@@ -55,65 +48,109 @@
     </div>
 
 <script>
+    // --- بيانات العائلة (أضف الأسماء كما تحب، الكود سيتكفل بالربط) ---
     const familyData = {
-        // فروع سليمان
-        'soliman': { name: 'سليمان (الجاك)', children: [{name:'عمر', id:'omar_s'}, {name:'النعمة', id:'alniama_s'}, {name:'عبد العظيم', id:'abdelazim_s'}, {name:'عبدالغني', id:'abdelghani_s'}, {name:'نفيسة', id:'nefisa_s'}, {name:'مدينة', id:'madina_s'}, {name:'عبد القيوم'}] },
-        'abdelghani_s': { name: 'عبدالغني سليمان (الجاك)', partner: 'بلالة محمد (السني)', relation: 'ابنة عمه', partnerId: 'balala_ms', children: [{name:'وضاح'}, {name:'سليمان'}, {name:'خالد'}, {name:'عمر'}, {name:'هاجر'}, {name:'هالة'}, {name:'هلالة'}, {name:'هديل'}] },
-        'balala_ms': { name: 'بلالة محمد (السني)', partner: 'عبدالغني سليمان', relation: 'ابن عمها', partnerId: 'abdelghani_s' },
-
-        // فرع محمد السني المحدث
-        'mohammed_s': { name: 'محمد (السني)', children: [{name:'عباس', id:'abbas_ms'}, {name:'بخيت'}, {name:'عبدالواحد'}, {name:'عبدالرحمن'}, {name:'عبدالرحيم'}, {name:'عوض الله'}, {name:'بلالة', id:'balala_ms'}, {name:'مسرة'}] },
-        'abbas_ms': { name: 'عباس محمد (السني)', partner: 'هلالة عثمان (حنان)', relation: 'ابنة عمه', partnerId: 'helala_o', children: [{name:'نازك'}, {name:'محمد'}, {name:'مهند'}, {name:'مصطفى'}, {name:'مهتدي'}] },
-        'helala_o': { name: 'هلالة عثمان (حنان)', partner: 'عباس محمد (السني)', partnerId: 'abbas_ms' },
-
-        // فرع عثمان حنان
-        'othman': { name: 'عثمان (حنان)', children: [{name:'محمد', id:'mohammed_o'}, {name:'زينب', id:'zeinab_o'}, {name:'هلالة', id:'helala_o'}] },
+        'soliman': { name: 'سليمان (الجاك)', children: ['عمر سليمان', 'النعمة سليمان', 'عبد العظيم سليمان', 'عبدالغني سليمان', 'نفيسة سليمان', 'مدينة سليمان', 'عبد القيوم سليمان'] },
+        'othman': { name: 'عثمان (حنان)', children: ['محمد عثمان', 'زينب عثمان', 'هلاله عثمان'] }, // جربت كتابتها بالـ "هـ"
+        'mohammed_s': { name: 'محمد (السني)', children: ['عباس محمد', 'بخيت محمد', 'عبدالواحد محمد', 'عبدالرحمن محمد', 'عبدالرحيم محمد', 'عوض الله محمد', 'بلالة محمد', 'مسرة محمد'] },
         
-        // بقية الفروع (نفس البيانات السابقة للربط)
-        'omar_s': { 
-            name: 'عمر سليمان (الجاك)', partner: 'زينب عثمان (حنان)', relation: 'ابنة خاله', partnerId: 'zeinab_o',
-            children: [{name:'حيدر', id:'haidar_o'}, {name:'سيف الدين', id:'seif_o'}, {name:'سفيان', id:'sofian_o'}, {name:'إشراقة', id:'ishraga_o'}, {name:'رقية', id:'rokia_o'}] 
+        'omar_s': { name: 'عمر سليمان', partner: 'زينب عثمان', children: ['حيدر عمر', 'سيف الدين عمر', 'سفيان عمر', 'إشراقة عمر', 'رقية عمر'] },
+        'zeinab_o': { name: 'زينب عثمان', partner: 'عمر سليمان' },
+        
+        'abbas_ms': { name: 'عباس محمد', partner: 'هلالة عثمان', children: ['نازك عباس', 'محمد عباس', 'مهند عباس', 'مصطفى عباس', 'مهتدي عباس'] },
+        'helala_o': { name: 'هلالة عثمان', partner: 'عباس محمد' }, // هنا بالـ "ة" وسيطابقها الكود مع عباس
+
+        'nefisa_s': { name: 'نفيسة سليمان', partner: 'صالح علي ابوالحسن', children: ['هاشم صالح', 'عبدالحفيظ صالح', 'حسن صالح', 'كمال صالح'] },
+        'hashem_s': { name: 'هاشم صالح', partner: 'إشراقة عمر', children: ['نادر هاشم', 'ريم هاشم'] },
+        'ishraga_o': { name: 'إشراقة عمر', partner: 'هاشم صالح' },
+
+        'abdelghani_s': { name: 'عبدالغني سليمان', partner: 'بلالة محمد', children: ['وضاح عبدالغني', 'سليمان عبدالغني', 'هاجر عبدالغني'] },
+        'balala_ms': { name: 'بلالة محمد', partner: 'عبدالغني سليمان' },
+
+        'mohammed_o': { name: 'محمد عثمان', partner: 'مدينة سليمان', children: ['اميمة محمد عثمان', 'نجلاء محمد عثمان', 'مجاهد محمد عثمان'] },
+        'madina_s': { name: 'مدينة سليمان', partner: 'محمد عثمان' },
+
+        'abdelqayyum_s': { name: 'عبد القيوم سليمان', partner: 'مها مختار', children: ['محمد عبدالقيوم', 'احمد عبدالقيوم', 'علا عبدالقيوم'] }
+    };
+
+    // --- محرك الذكاء وتوحيد الحروف ---
+    const Utils = {
+        normalize: (text) => {
+            if (!text) return "";
+            return text.trim()
+                .replace(/[أإآ]/g, "ا")
+                .replace(/ة/g, "ه")
+                .replace(/ى/g, "ي")
+                .replace(/\s+/g, ""); // إزالة المسافات للمقارنة الدقيقة
         },
-        'alniama_s': { name: 'النعمة سليمان (الجاك)', partner: 'عبدالله محمد صالح', children: [{name:'محمد', id:'mohammed_a'}, {name:'إقبال', id:'iqbal_a'}] },
-        'nefisa_s': { name: 'نفيسة سليمان (الجاك)', partner: 'صالح علي أبو الحسن', children: [{name:'هاشم', id:'hashem_s'}] },
-        'abdelazim_s': { name: 'عبد العظيم سليمان (الجاك)', children: [{name:'حاتم', id:'hatim_a'}] },
-        'zeinab_o': { name: 'زينب عثمان (حنان)', partner: 'عمر سليمان (الجاك)', partnerId: 'omar_s' },
-        'bat_almona': { name: 'بت المنى', children: [{name:'علي'}] }
+        // البحث عن ID الشخص بناءً على اسمه (تجاهل الحساسية)
+        findIdByName: (name) => {
+            const normalizedTarget = Utils.normalize(name);
+            return Object.keys(familyData).find(id => 
+                Utils.normalize(familyData[id].name) === normalizedTarget
+            );
+        }
     };
 
     let history = [];
 
-    function openModal(id, save = true) {
-        const p = familyData[id]; if (!p) return;
+    function openModal(idOrName, save = true) {
+        // إذا كان المدخل اسماً وليس ID، نحاول إيجاد الـ ID الخاص به
+        let id = familyData[idOrName] ? idOrName : Utils.findIdByName(idOrName);
+        
+        const p = familyData[id];
+        if (!p) {
+            alert("هذا الشخص ليس لديه سجل مفصل بعد.");
+            return;
+        }
+
         if (save) history.push(id);
         document.getElementById('backBtn').style.visibility = history.length > 1 ? 'visible' : 'hidden';
         
-        let h = `<div class="person-name">${p.name}</div>`;
+        let h = `<div style="font-size:1.4rem; font-weight:700; color:var(--accent); text-align:center; margin-bottom:15px; border-bottom:2px solid #eee; padding-bottom:10px;">${p.name}</div>`;
+        
+        // ربط الشريك تلقائياً
         if (p.partner) {
+            const partnerId = Utils.findIdByName(p.partner);
             h += `<div class="info-section"><strong>الزوج/ة:</strong> ${p.partner} 
-            ${p.relation ? `<span class="relation-tag">(${p.relation})</span>` : ''}
-            ${p.partnerId ? `<button class="btn-link" onclick="openModal('${p.partnerId}')">سجل الشريك 🔗</button>` : ''}</div>`;
+            ${partnerId ? `<br><button class="btn-link" onclick="openModal('${partnerId}')">سجل الشريك 🔗</button>` : '<br><small>(لا يوجد سجل للشريك حالياً)</small>'}</div>`;
         }
-        if (p.children) {
-            h += `<strong>الأبناء:</strong><br>` + p.children.map(c => `
-                <div class="child-box ${c.id ? 'clickable' : ''}" onclick="${c.id ? `openModal('${c.id}')` : ''}">
-                    ${c.name} ${c.id ? '<span>←</span>' : ''}
-                </div>`).join('');
+
+        // ربط الأبناء تلقائياً
+        if (p.children && p.children.length > 0) {
+            h += `<strong>الأبناء:</strong><br>` + p.children.map(childName => {
+                const childId = Utils.findIdByName(childName);
+                return `<div class="child-box ${childId ? 'clickable' : ''}" onclick="${childId ? `openModal('${childId}')` : ''}">
+                    ${childName} ${childId ? '<span>←</span>' : ''}
+                </div>`;
+            }).join('');
         }
+
         document.getElementById('modalBody').innerHTML = h;
         document.getElementById('familyModal').style.display = 'flex';
+    }
+
+    function renderMainGrid() {
+        const mains = ['soliman', 'othman', 'mohammed_s'];
+        document.getElementById('mainGrid').innerHTML = mains.map(id => 
+            `<div class="branch-card" onclick="openModal('${id}')">${familyData[id].name}</div>`
+        ).join('');
     }
 
     function handleSearch(q) {
         const r = document.getElementById('searchResults');
         if (q.length < 2) { r.style.display = 'none'; return; }
-        const matches = Object.keys(familyData).filter(k => familyData[k].name.includes(q));
-        r.innerHTML = matches.map(k => `<div class="search-item" onclick="openModal('${k}')">${familyData[k].name} 🔍</div>`).join('');
+        const normalizedQ = Utils.normalize(q);
+        const matches = Object.keys(familyData).filter(id => Utils.normalize(familyData[id].name).includes(normalizedQ));
+        
+        r.innerHTML = matches.map(id => `<div class="search-item" onclick="openModal('${id}')">${familyData[id].name} 🔍</div>`).join('');
         r.style.display = matches.length ? 'block' : 'none';
     }
 
     function goBack() { history.pop(); openModal(history.pop()); }
     function closeModal() { document.getElementById('familyModal').style.display = 'none'; history = []; }
+
+    renderMainGrid();
 </script>
 </body>
 </html>
