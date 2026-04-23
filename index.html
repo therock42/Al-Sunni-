@@ -2,51 +2,216 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>سجل عائلة السني - النسخة المعتمدة</title>
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;500;700&display=swap" rel="stylesheet">
     <style>
-        :root { --primary: #1e293b; --accent: #2563eb; --bg: #f8fafc; }
-        body { font-family: 'Tajawal', sans-serif; background: var(--bg); margin: 0; padding: 20px; color: var(--primary); text-align: right; }
-        .container { max-width: 800px; margin: auto; }
-        .search-container { background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-bottom: 20px; position: relative; }
-        input { width: 100%; padding: 12px; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 16px; outline: none; box-sizing: border-box; }
-        input:focus { border-color: var(--accent); }
-        .card { background: white; padding: 25px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); display: none; border-top: 4px solid var(--accent); }
-        .name-header { font-size: 24px; font-weight: bold; color: var(--accent); border-bottom: 2px solid #eee; padding-bottom: 10px; margin-bottom: 20px; text-align: center; }
-        .info-row { background: #f1f5f9; padding: 12px; border-radius: 10px; margin-bottom: 8px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
-        .info-row:hover { background: #e2e8f0; }
-        .label { font-weight: bold; color: #64748b; font-size: 14px; }
-        .tag { background: #dcfce7; color: #166534; font-size: 11px; padding: 2px 8px; border-radius: 10px; margin-right: 10px; border: 1px solid #bdf0cc; }
-        .results { position: absolute; background: white; width: 100%; max-height: 250px; overflow-y: auto; z-index: 100; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); display: none; top: 100%; right: 0; }
-        .res-item { padding: 12px; border-bottom: 1px solid #eee; cursor: pointer; }
-        .res-item:hover { background: #f1f5f9; }
+        :root {
+            --primary: #0f172a;
+            --accent: #d4af37; /* ذهبي هادئ */
+            --accent-blue: #2563eb;
+            --bg: #f1f5f9;
+            --card-bg: rgba(255, 255, 255, 0.95);
+        }
+
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background-color: var(--bg);
+            background-image: radial-gradient(#cbd5e1 1px, transparent 1px);
+            background-size: 20px 20px;
+            margin: 0;
+            padding: 20px;
+            color: var(--primary);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 700px;
+            margin: 40px auto;
+        }
+
+        /* رأس الصفحة */
+        .header-section {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header-section h1 {
+            color: var(--primary);
+            font-weight: 700;
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        /* صندوق البحث */
+        .search-container {
+            background: var(--card-bg);
+            padding: 10px;
+            border-radius: 50px;
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+            position: relative;
+            border: 1px solid #e2e8f0;
+            transition: all 0.3s ease;
+        }
+
+        .search-container:focus-within {
+            box-shadow: 0 10px 20px rgba(37, 99, 235, 0.1);
+            border-color: var(--accent-blue);
+        }
+
+        input {
+            width: 100%;
+            padding: 15px 25px;
+            border: none;
+            background: transparent;
+            font-size: 18px;
+            outline: none;
+            font-family: 'Tajawal', sans-serif;
+        }
+
+        /* النتائج المنسدلة */
+        .results {
+            position: absolute;
+            background: white;
+            width: 95%;
+            max-height: 250px;
+            overflow-y: auto;
+            z-index: 100;
+            border-radius: 20px;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+            display: none;
+            top: 70px;
+            right: 2.5%;
+            border: 1px solid #f1f5f9;
+        }
+
+        .res-item {
+            padding: 15px 20px;
+            border-bottom: 1px solid #f8fafc;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .res-item:hover {
+            background: #f8fafc;
+            color: var(--accent-blue);
+        }
+
+        /* بطاقة الشخص */
+        .card {
+            background: var(--card-bg);
+            padding: 35px;
+            border-radius: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.05);
+            display: none;
+            border-top: 6px solid var(--accent);
+            animation: slideUp 0.4s ease-out;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .name-header {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--primary);
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .info-grid {
+            display: grid;
+            gap: 12px;
+        }
+
+        .info-row {
+            background: #ffffff;
+            padding: 16px 20px;
+            border-radius: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            border: 1px solid #f1f5f9;
+            transition: all 0.2s;
+        }
+
+        .info-row:hover {
+            transform: scale(1.02);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            border-color: var(--accent);
+        }
+
+        .label {
+            font-weight: 500;
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        .val {
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .tag {
+            background: #fef3c7;
+            color: #92400e;
+            font-size: 12px;
+            padding: 4px 12px;
+            border-radius: 20px;
+            margin-right: 10px;
+            font-weight: bold;
+        }
+
+        .section-title {
+            margin-top: 25px;
+            margin-bottom: 10px;
+            font-size: 14px;
+            font-weight: 700;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding-right: 10px;
+        }
+
+        .child-item {
+            background: #f8fafc;
+            border: 1px dashed #e2e8f0;
+        }
+
+        /* تخصيص شريط التمرير */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #f1f5f9; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <div class="search-container">
-        <h2 style="text-align:center; margin-top:0;">سجل عائلة السني - الأساسات</h2>
-        <div style="position:relative">
-            <input type="text" id="searchInput" placeholder="ابحث عن اسم (هاشم، إشراقة، إقبال...)" oninput="search(this.value)">
-            <div id="resBox" class="results"></div>
-        </div>
+    <div class="header-section">
+        <h1>سجل عائلة السني</h1>
+        <p style="color: #64748b;">التوثيق الرقمي للأنساب</p>
     </div>
+
+    <div class="search-container">
+        <input type="text" id="searchInput" placeholder="ابحث عن اسم العائلة..." oninput="search(this.value)" autocomplete="off">
+        <div id="resBox" class="results"></div>
+    </div>
+
     <div id="personCard" class="card"></div>
 </div>
 
 <script>
-// البيانات الأساسية المعتمدة منك فقط
+// نفس بياناتك المعتمدة دون تغيير
 const familyData = [
     { id: 'sani', name: 'أحمد (السني)', p: null, m: null },
-    
-    // الأقطاب
     { id: 'soliman', name: 'سليمان (الجاك)', p: 'sani' },
     { id: 'othman', name: 'عثمان (حنان)', p: 'sani' },
     { id: 'mohammed_s', name: 'محمد (السني)', p: 'sani' },
     { id: 'bat_almona', name: 'بت المنى', p: 'sani' },
-
-    // فرع سليمان الجاك
     { id: 'omar_s', name: 'عمر سليمان', p: 'soliman' },
     { id: 'alniama_s', name: 'النعمة سليمان', p: 'soliman' },
     { id: 'abdelazim_s', name: 'عبد العظيم سليمان', p: 'soliman' },
@@ -56,25 +221,15 @@ const familyData = [
     { id: 'fatima_s', name: 'فاطمة سليمان', p: 'soliman' },
     { id: 'amhussin_s', name: 'أم الحسين سليمان', p: 'soliman' },
     { id: 'rawda_s', name: 'الروضة سليمان', p: 'soliman' },
-
-    // فرع عثمان حنان
     { id: 'zeinab_o', name: 'زينب عثمان', p: 'othman' },
     { id: 'mohammed_o', name: 'محمد عثمان', p: 'othman' },
-
-    // فرع محمد السني
     { id: 'abbas_ms', name: 'عباس محمد السني', p: 'mohammed_s' },
     { id: 'bakheet_ms', name: 'بخيت محمد السني', p: 'mohammed_s' },
-
-    // فرع بت المنى
     { id: 'ali_bm', name: 'علي بت المنى', p: 'bat_almona' },
-
-    // الربط المزدوج الأول (هاشم وإشراقة)
     { id: 'saleh_ali', name: 'صالح علي', p: null },
     { id: 'hashem_s', name: 'هاشم صالح علي', p: 'saleh_ali', m: 'nefisa_s' },
     { id: 'ishraga_o', name: 'إشراقة عمر سليمان', p: 'omar_s', m: 'zeinab_o' },
     { id: 'reem_h', name: 'ريم هاشم', p: 'hashem_s', m: 'ishraga_o' },
-
-    // الربط المزدوج الثاني (سفيان وإقبال)
     { id: 'abdullah_m', name: 'عبدالله محمد صالح', p: null },
     { id: 'iqbal_a', name: 'إقبال عبدالله', p: 'abdullah_m', m: 'alniama_s' },
     { id: 'sofian_o', name: 'سفيان عمر سليمان', p: 'omar_s', m: 'zeinab_o' },
@@ -82,21 +237,15 @@ const familyData = [
 ];
 
 const Engine = {
-    // محرك استنتاج القرابة
     getRelation: (p1, p2) => {
         if (!p1 || !p2 || p1.id === p2.id) return "";
         const f1 = familyData.find(x => x.id === p1.p), m1 = familyData.find(x => x.id === p1.m);
         const f2 = familyData.find(x => x.id === p2.p), m2 = familyData.find(x => x.id === p2.m);
-
-        // أولاد عم (الآباء إخوان)
         if (f1 && f2 && f1.p === f2.p && f1.id !== f2.id) return "ود عم / بت عم";
-        // أولاد خالة (الأمهات أخوات)
         if (m1 && m2 && m1.p === m2.p && m1.id !== m2.id) return "ود خالة / بت خالة";
-        // الربط المتقاطع (ود خؤولة / عمومة)
         if ((m1 && f2 && m1.p === f2.p) || (f1 && m2 && f1.p === m2.p)) return "ود خؤولة / عمومة";
         return "";
     },
-    // البحث عن الشريك (عن طريق الأبناء المشتركين)
     getPartner: (p) => {
         const child = familyData.find(c => (c.p === p.id && c.m) || (c.m === p.id && c.p));
         if (!child) return null;
@@ -111,28 +260,37 @@ function render(id) {
     const partner = Engine.getPartner(p);
     const children = familyData.filter(x => x.p === p.id || x.m === p.id);
 
-    let html = `<div class="name-header">${p.name}</div>`;
-    if (father) html += `<div class="info-row" onclick="render('${father.id}')"><span class="label">الأب:</span><span>${father.name}</span></div>`;
-    if (mother) html += `<div class="info-row" onclick="render('${mother.id}')"><span class="label">الأم:</span><span>${mother.name}</span></div>`;
+    let html = `<div class="name-header">${p.name}</div><div class="info-grid">`;
+    
+    if (father) html += `<div class="info-row" onclick="render('${father.id}')"><span class="label">الأب</span><span class="val">${father.name}</span></div>`;
+    if (mother) html += `<div class="info-row" onclick="render('${mother.id}')"><span class="label">الأم</span><span class="val">${mother.name}</span></div>`;
     
     if (partner) {
         const rel = Engine.getRelation(p, partner);
-        html += `<div class="info-row" style="background:#e0f2fe" onclick="render('${partner.id}')"><span class="label">الزوج/ة:</span><span>${partner.name} ${rel ? `<span class="tag">${rel}</span>` : ''}</span></div>`;
+        html += `<div class="info-row" style="background:#f0f9ff; border-color:#bae6fd" onclick="render('${partner.id}')">
+                    <span class="label">الزوج/ة</span>
+                    <span class="val">${partner.name} ${rel ? `<span class="tag">${rel}</span>` : ''}</span>
+                 </div>`;
     }
 
     if (children.length) {
-        html += `<div style="margin-top:20px; font-weight:bold; color:#64748b; padding-bottom:5px; border-bottom:1px solid #f1f5f9">الأبناء:</div>`;
-        children.forEach(c => html += `<div class="info-row" onclick="render('${c.id}')">${c.name}</div>`);
+        html += `</div><div class="section-title">الأبناء</div><div class="info-grid">`;
+        children.forEach(c => {
+            html += `<div class="info-row child-item" onclick="render('${c.id}')"><span class="val">${c.name}</span><span style="color:#cbd5e1">←</span></div>`;
+        });
     }
 
-    document.getElementById('personCard').innerHTML = html;
-    document.getElementById('personCard').style.display = 'block';
+    html += `</div>`;
+    const card = document.getElementById('personCard');
+    card.innerHTML = html;
+    card.style.display = 'block';
     document.getElementById('resBox').style.display = 'none';
+    document.getElementById('searchInput').value = '';
 }
 
 function search(v) {
     const b = document.getElementById('resBox');
-    if (v.length < 2) { b.style.display = 'none'; return; }
+    if (v.length < 1) { b.style.display = 'none'; return; }
     const matches = familyData.filter(x => x.name.includes(v));
     b.innerHTML = matches.map(m => `<div class="res-item" onclick="render('${m.id}')">${m.name}</div>`).join('');
     b.style.display = matches.length ? 'block' : 'none';
@@ -140,4 +298,3 @@ function search(v) {
 </script>
 </body>
 </html>
-
