@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>سجل عائلة السني - النسخة الشاملة المحدثة</title>
+    <title>سجل عائلة السني - نسخة صلات القرابة</title>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root { --primary: #0f172a; --accent: #1e40af; --bg: #f8fafc; --card: #ffffff; --gold: #b45309; --emerald: #059669; }
@@ -20,6 +20,7 @@
         .modal { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.7); display: none; justify-content: center; align-items: center; z-index: 3000; backdrop-filter: blur(4px); padding: 10px; }
         .modal-content { background: white; width: 100%; max-width: 480px; max-height: 90vh; border-radius: 24px; padding: 25px; overflow-y: auto; position: relative; }
         .info-section { background: #f0f7ff; padding: 15px; border-radius: 12px; margin-bottom: 15px; border-right: 4px solid var(--accent); }
+        .kinship-badge { display: inline-block; background: var(--emerald); color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.75rem; margin-top: 5px; }
         .child-box { background: #f8fafc; padding: 12px; border-radius: 10px; border: 1px solid #f1f5f9; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; }
         .clickable { cursor: pointer; background: #fff; border-color: #cbd5e1; font-weight: bold; }
         .btn-link { background: var(--primary); color: white; border: none; width: 100%; padding: 12px; border-radius: 10px; cursor: pointer; font-weight: bold; margin-top: 10px; }
@@ -34,7 +35,7 @@
     </div>
 
     <div class="search-container">
-        <input type="text" id="familySearch" placeholder="ابحث عن أي اسم..." oninput="handleSearch(this.value)">
+        <input type="text" id="familySearch" placeholder="ابحث عن اسم أو صلة قرابة..." oninput="handleSearch(this.value)">
         <div id="searchResults" class="search-results"></div>
     </div>
 
@@ -54,57 +55,68 @@
 
 <script>
     const familyData = {
-        // --- الفروع الرئيسية ---
-        'soliman': { name: 'سليمان (الجاك)', children: ['عمر سليمان', 'النعمة سليمان', 'عبد العظيم سليمان', 'عبدالغني سليمان', 'نفيسة سليمان', 'مدينة سليمان', 'عبد القيوم سليمان', 'فاطمة سليمان', 'أم الحسين سليمان', 'الروضة سليمان'] },
-        'othman': { name: 'عثمان (حنان)', children: ['محمد عثمان', 'عبدالله عثمان', 'زينب عثمان', 'هلالة عثمان'] },
-        'mohammed_s': { name: 'محمد (السني)', children: ['عباس محمد', 'بخيت محمد', 'عبدالواحد محمد', 'عبدالرحمن محمد', 'عبدالرحيم محمد', 'عوض الله محمد', 'بلالة محمد', 'مسرة محمد'] },
-        'bat_almona': { name: 'بت المنى', children: ['علي'] },
+        // الفروع الرئيسية (الجيل الأول)
+        'soliman': { name: 'سليمان (الجاك)', children: ['عمر سليمان', 'النعمة سليمان', 'عبد العظيم سليمان', 'عبدالغني سليمان', 'نفيسة سليمان', 'مدينة سليمان', 'عبد القيوم سليمان', 'فاطمة سليمان', 'أم الحسين سليمان', 'الروضة سليمان'], parent: 'احمد السني' },
+        'othman': { name: 'عثمان (حنان)', children: ['محمد عثمان', 'عبدالله عثمان', 'زينب عثمان', 'هلالة عثمان'], parent: 'احمد السني' },
+        'mohammed_s': { name: 'محمد (السني)', children: ['عباس محمد', 'بخيت محمد', 'عبدالواحد محمد', 'عبدالرحمن محمد', 'عبدالرحيم محمد', 'عوض الله محمد', 'بلالة محمد', 'مسرة محمد'], parent: 'احمد السني' },
+        'bat_almona': { name: 'بت المنى', children: ['علي'], parent: 'احمد السني' },
 
-        // --- تفاصيل فرع عمر سليمان (تم التحديث الشامل) ---
-        'omar_s': { name: 'عمر سليمان', partner: 'زينب عثمان', children: ['شمس الدين عمر', 'حيدر عمر', 'سيف الدين عمر', 'سفيان عمر', 'إشراقة عمر', 'نادية عمر', 'رفيدة عمر', 'اعتدال عمر', 'رقية عمر', 'أمل عمر', 'هويدا عمر'] },
-        'shams_o': { name: 'شمس الدين عمر', partner: 'نهلة محمد عثمان', children: ['سحر شمس الدين', 'محمد شمس الدين'] },
-        'haidar_o': { name: 'حيدر عمر', partner: 'نجلاء عبدالله القمر', children: ['سجود حيدر', 'توسل حيدر', 'محمد حيدر', 'عمر حيدر', 'أحمد حيدر', 'منة الله حيدر', 'جود حيدر'] },
-        'seif_o': { name: 'سيف الدين عمر', partner: 'أميرة التهامي', children: ['آلاء سيف الدين', 'إسراء سيف الدين', 'محمد سيف الدين', 'أحمد سيف الدين', 'تنزيل سيف الدين'] },
-        'sofian_o': { name: 'سفيان عمر', partner: 'إقبال عبدالله', children: ['أمل سفيان', 'آية سفيان', 'تسنيم سفيان', 'نون سفيان', 'تسابيح سفيان'] },
-        'rokia_o': { name: 'رقية عمر', partner: 'محمد عبدالله', children: ['امتثال محمد عبدالله', 'عبير محمد عبدالله', 'إيمان محمد عبدالله', 'أحمد محمد عبدالله'] },
-        'rofaida_o': { name: 'رفيدة عمر', partner: 'سليمان خضر', children: ['شهد سليمان', 'صفاء سليمان', 'التاج سليمان', 'مدثر سليمان', 'وعد سليمان'] },
-        'etidal_o': { name: 'اعتدال عمر', partner: 'عبدالملك محمد علي فضيل', children: ['محمد عبدالملك', 'مصطفى عبدالملك'] },
-        'howaida_o': { name: 'هويدا عمر', partner: 'محمد خير عبدالرحمن', children: ['عامر محمد خير', 'أحمد محمد خير', 'أنس محمد خير', 'أواب محمد خير', 'مصطفى محمد خير', 'زينب محمد خير'] },
-        'amal_o': { name: 'أمل عمر', partner: 'يوسف التهامي', children: ['حفية يوسف', 'مآب يوسف'] },
-        'ishraga_o': { name: 'إشراقة عمر', partner: 'هاشم صالح' },
-
-        // --- تفاصيل فرع عثمان (حنان) وعبدالله عثمان ---
-        'abdullah_o': { name: 'عبدالله عثمان', partner: 'سعاد الصادق', children: ['المعز عبدالله', 'محمد عبدالله عثمان', 'مجدي عبدالله', 'منذر عبدالله', 'رحاب عبدالله', 'رانيا عبدالله', 'رندا عبدالله', 'ريان عبدالله'] },
-        'zeinab_o': { name: 'زينب عثمان', partner: 'عمر سليمان' },
-        'helala_o': { name: 'هلالة عثمان', partner: 'عباس محمد' },
-        'mohammed_o': { name: 'محمد عثمان', partner: 'مدينة سليمان', children: ['اميمة محمد عثمان', 'نهلة محمد عثمان', 'ابتهاج محمد عثمان', 'ميساء محمد عثمان', 'نجلاء محمد عثمان', 'مجاهد محمد عثمان'] },
-
-        // --- تفاصيل فرع نفيسة سليمان ---
-        'nefisa_s': { name: 'نفيسة سليمان', partner: 'صالح علي ابوالحسن', children: ['هاشم صالح', 'عبدالحفيظ صالح', 'حسن صالح', 'منيرة صالح', 'أميرة صالح', 'سيداحمد صالح', 'معتصم صالح', 'كمال صالح', 'فتاح صالح', 'التجاني صالح', 'بخيتة صالح'] },
-        'abdelhafiz_s': { name: 'عبدالحفيظ صالح', partner: 'هدى عثمان عبدالماجد', children: ['محمد عبدالحفيظ', 'مهند عبدالحفيظ', 'مؤيد عبدالحفيظ', 'مصطفى عبدالحفيظ'] },
-        'hassan_s': { name: 'حسن صالح', partner: 'هاجر الكرار', children: ['زحل حسن', 'ضحى حسن', 'اشتياق حسن', 'مجتبى حسن', 'عبدالله حسن', 'كمال حسن'] },
-        'hashem_s': { name: 'هاشم صالح', partner: 'إشراقة عمر', children: ['نادر هاشم', 'ريم هاشم', 'رؤى هاشم', 'رزان هاشم'] },
+        // فرع عمر سليمان
+        'omar_s': { name: 'عمر سليمان', partner: 'زينب عثمان', children: ['شمس الدين عمر', 'حيدر عمر', 'سيف الدين عمر', 'سفيان عمر', 'إشراقة عمر', 'نادية عمر', 'رفيدة عمر', 'اعتدال عمر', 'رقية عمر', 'أمل عمر', 'هويدا عمر'], parent: 'سليمان' },
+        'zeinab_o': { name: 'زينب عثمان', partner: 'عمر سليمان', parent: 'عثمان' }, // زوجة عمر
         
-        // --- فروع إضافية ---
-        'fatima_s': { name: 'فاطمة سليمان', partner: 'محمد علي فضيل', children: ['عبدالملك محمد علي فضيل', 'عبدالعزيز محمد علي فضيل', 'عبدالعظيم محمد علي فضيل', 'عبدالله محمد علي فضيل', 'عشة محمد علي فضيل', 'بتول محمد علي فضيل'] },
-        'roda_s': { name: 'الروضة سليمان', partner: 'العوض بله', children: ['محمد العوض', 'صلاح العوض', 'حسن العوض', 'ثرية العوض'] },
-        'abdelghani_s': { name: 'عبدالغني سليمان', partner: 'بلالة محمد', children: ['وضاح عبدالغني', 'سليمان عبدالغني', 'خالد عبدالغني', 'عمر عبدالغني', 'هاجر عبدالغني', 'هالة عبدالغني', 'هلالة عبدالغني', 'هديل عبدالغني'] },
-        'abbas_ms': { name: 'عباس محمد', partner: 'هلالة عثمان', children: ['نازك عباس', 'محمد عباس', 'مهند عباس', 'مصطفى عباس', 'مهتدي عباس'] },
-        'balala_ms': { name: 'بلالة محمد', partner: 'عبدالغني سليمان' }
+        // فرع نفيسة سليمان
+        'nefisa_s': { name: 'نفيسة سليمان', partner: 'صالح علي ابوالحسن', children: ['هاشم صالح', 'عبدالحفيظ صالح', 'حسن صالح', 'منيرة صالح', 'أميرة صالح', 'سيداحمد صالح', 'معتصم صالح', 'كمال صالح', 'فتاح صالح', 'التجاني صالح', 'بخيتة صالح'], parent: 'سليمان' },
+        'hashem_s': { name: 'هاشم صالح', partner: 'إشراقة عمر', children: ['نادر هاشم', 'ريم هاشم', 'رؤى هاشم', 'رزان هاشم'], parent: 'نفيسة' },
+        'ishraga_o': { name: 'إشراقة عمر', partner: 'هاشم صالح', parent: 'عمر سليمان' }, // زوجة هاشم
+        
+        // فرع عبدالله عثمان
+        'abdullah_o': { name: 'عبدالله عثمان', partner: 'سعاد الصادق', children: ['المعز عبدالله', 'محمد عبدالله عثمان', 'مجدي عبدالله', 'منذر عبدالله', 'رحاب عبدالله', 'رانيا عبدالله', 'رندا عبدالله', 'ريان عبدالله'], parent: 'عثمان' },
+        
+        // فرع عباس محمد
+        'abbas_ms': { name: 'عباس محمد', partner: 'هلالة عثمان', children: ['نازك عباس', 'محمد عباس', 'مهند عباس', 'مصطفى عباس', 'مهتدي عباس'], parent: 'محمد السني' },
+        'helala_o': { name: 'هلالة عثمان', partner: 'عباس محمد', parent: 'عثمان' },
+
+        // فرع مدينة سليمان ومحمد عثمان
+        'madina_s': { name: 'مدينة سليمان', partner: 'محمد عثمان', parent: 'سليمان' },
+        'mohammed_o': { name: 'محمد عثمان', partner: 'مدينة سليمان', children: ['اميمة محمد عثمان', 'نهلة محمد عثمان', 'ابتهاج محمد عثمان', 'ميساء محمد عثمان', 'نجلاء محمد عثمان', 'مجاهد محمد عثمان'], parent: 'عثمان' },
+
+        // أبناء عمر سليمان بالتفصيل
+        'haidar_o': { name: 'حيدر عمر', partner: 'نجلاء عبدالله القمر', children: ['سجود حيدر', 'توسل حيدر', 'محمد حيدر', 'عمر حيدر', 'أحمد حيدر', 'منة الله حيدر', 'جود حيدر'], parent: 'عمر سليمان' },
+        'seif_o': { name: 'سيف الدين عمر', partner: 'أميرة التهامي', children: ['آلاء سيف الدين', 'إسراء سيف الدين', 'محمد سيف الدين', 'أحمد سيف الدين', 'تنزيل سيف الدين'], parent: 'عمر سليمان' },
+        'sofian_o': { name: 'سفيان عمر', partner: 'إقبال عبدالله', children: ['أمل سفيان', 'آية سفيان', 'تسنيم سفيان', 'نون سفيان', 'تسابيح سفيان'], parent: 'عمر سليمان' },
+        'rokia_o': { name: 'رقية عمر', partner: 'محمد عبدالله', children: ['امتثال محمد عبدالله', 'عبير محمد عبدالله', 'إيمان محمد عبدالله', 'أحمد محمد عبدالله'], parent: 'عمر سليمان' },
+        'rofaida_o': { name: 'رفيدة عمر', partner: 'سليمان خضر', children: ['شهد سليمان', 'صفاء سليمان', 'التاج سليمان', 'مدثر سليمان', 'وعد سليمان'], parent: 'عمر سليمان' },
+        'howaida_o': { name: 'هويدا عمر', partner: 'محمد خير عبدالرحمن', children: ['عامر محمد خير', 'أحمد محمد خير', 'أنس محمد خير', 'أواب محمد خير', 'مصطفى محمد خير', 'زينب محمد خير'], parent: 'عمر سليمان' },
+        'etidal_o': { name: 'اعتدال عمر', partner: 'عبدالملك محمد علي فضيل', parent: 'عمر سليمان' },
+        'abdelghani_s': { name: 'عبدالغني سليمان', partner: 'بلالة محمد', children: ['وضاح عبدالغني', 'سليمان عبدالغني', 'خالد عبدالغني', 'عمر عبدالغني', 'هاجر عبدالغني', 'هالة عبدالغني', 'هلالة عبدالغني', 'هديل عبدالغني'], parent: 'سليمان' },
+        'balala_ms': { name: 'بلالة محمد', partner: 'عبدالغني سليمان', parent: 'محمد السني' }
     };
 
     const Utils = {
         normalize: (text) => {
             if (!text) return "";
-            return text.trim()
-                .replace(/[أإآ]/g, "ا")
-                .replace(/ة/g, "ه")
-                .replace(/ى/g, "ي")
-                .replace(/\s+/g, "");
+            return text.trim().replace(/[أإآ]/g, "ا").replace(/ة/g, "ه").replace(/ى/g, "ي").replace(/\s+/g, "");
         },
         findIdByName: (name) => {
             const target = Utils.normalize(name);
             return Object.keys(familyData).find(id => Utils.normalize(familyData[id].name) === target);
+        },
+        getKinship: (person, partnerName) => {
+            const partnerId = Utils.findIdByName(partnerName);
+            if (!partnerId) return null;
+            const partner = familyData[partnerId];
+            
+            // تحليل بسيط لصلة القرابة بناءً على الآباء
+            if (person.parent && partner.parent) {
+                if (person.parent === partner.parent) return "صلة قرابة: أبناء عمومة/خؤولة مباشرين";
+                // يمكن إضافة شروط أكثر تفصيلاً هنا
+                const mainBranches = ['سليمان', 'عثمان', 'محمد السني', 'بت المنى'];
+                if (mainBranches.includes(person.parent) && mainBranches.includes(partner.parent)) {
+                    return "صلة قرابة: من أحفاد أحمد السني (أبناء عمومة)";
+                }
+            }
+            return "صلة قرابة: من داخل العائلة";
         }
     };
 
@@ -122,8 +134,12 @@
         
         if (p.partner) {
             const partnerId = Utils.findIdByName(p.partner);
-            h += `<div class="info-section"><strong>الزوج/ة:</strong> ${p.partner} 
-            ${partnerId ? `<br><button class="btn-link" onclick="openModalById('${partnerId}')">سجل الشريك 🔗</button>` : ''}</div>`;
+            const kinship = Utils.getKinship(p, p.partner);
+            
+            h += `<div class="info-section"><strong>الزوج/ة:</strong> ${p.partner}`;
+            if (kinship) h += `<br><span class="kinship-badge">${kinship}</span>`;
+            if (partnerId) h += `<br><button class="btn-link" onclick="openModalById('${partnerId}')">انتقل إلى سجل الشريك 🔗</button>`;
+            h += `</div>`;
         }
 
         if (p.children && p.children.length > 0) {
@@ -149,15 +165,8 @@
         r.style.display = matches.length ? 'block' : 'none';
     }
 
-    function goBack() { 
-        historyStack.pop(); 
-        if(historyStack.length > 0) renderModal(familyData[historyStack[historyStack.length-1]]); 
-    }
-    
-    function closeModal() { 
-        document.getElementById('familyModal').style.display = 'none'; 
-        historyStack = []; 
-    }
+    function goBack() { historyStack.pop(); if(historyStack.length > 0) renderModal(familyData[historyStack[historyStack.length-1]]); }
+    function closeModal() { document.getElementById('familyModal').style.display = 'none'; historyStack = []; }
 </script>
 </body>
 </html>
